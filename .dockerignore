@@ -1,0 +1,11 @@
+.git
+.gitignore
+node_modules
+vendor
+writable/cache/*
+writable/logs/*
+writable/session/*
+writable/debugbar/*
+writable/uploads/*
+.env
+*.log

@@ -1,0 +1,49 @@
+# ============================================================
+#  qr-sistemi - Docker Compose
+#  Calistir:  docker compose up -d --build   (web + db + phpmyadmin hep birlikte)
+# ============================================================
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: qr-sistemi-web
+    container_name: qr-sistemi-web
+    ports:
+      - "${WEB_PORT:-8090}:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      CI_ENVIRONMENT: development
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mariadb:11
+    container_name: qr-sistemi-db
+    environment:
+      MARIADB_DATABASE: "${DB_NAME:-qr_sistemi}"
+      MARIADB_USER: "${DB_USER:-qr_user}"
+      MARIADB_PASSWORD: "${DB_PASSWORD:-qr_pass}"
+      MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-root_pass}"
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "${DB_PORT:-3307}:3306"
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: qr-sistemi-phpmyadmin
+    environment:
+      PMA_HOST: db
+      UPLOAD_LIMIT: 64M
+    ports:
+      - "${PMA_PORT:-8091}:80"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  db_data:
