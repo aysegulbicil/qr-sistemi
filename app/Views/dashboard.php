@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <h1>Merhaba, <?= esc(session()->get('full_name')) ?></h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px">Bugünkü durumun aşağıda.</p>
+<p class="page-sub">Bugünkü durumun aşağıda.</p>
 
 <div class="card hero pad-lg">
     <div class="clock" id="clock">--:--:--</div>
@@ -14,6 +14,7 @@
     <?php if (! empty($scan)): ?>
         <p style="opacity:.9;margin:0 0 12px;position:relative;z-index:1">Okutulan nokta: <strong><?= esc($scan['location_name']) ?></strong></p>
     <?php endif; ?>
+    <?php if ($canPunch): ?>
     <form method="post" action="<?= site_url('attendance/punch') ?>" style="position:relative;z-index:1">
         <?= csrf_field() ?>
         <input type="hidden" name="geo_lat" id="dash_lat">
@@ -30,7 +31,9 @@
             </button>
         <?php endif; ?>
     </form>
-    <p style="opacity:.8;font-size:.85rem;margin:12px 0 0;position:relative;z-index:1">Kapıdaki QR'ı okutarak da giriş/çıkış yapabilirsin.</p>
+    <?php else: ?>
+    <p style="opacity:.92;font-size:.95rem;margin:6px 0 0;position:relative;z-index:1">Giriş/çıkış yapmak için kapıdaki <strong>QR kodunu okutman</strong> gerekiyor.</p>
+    <?php endif; ?>
 </div>
 
 <h2>Bugün</h2>

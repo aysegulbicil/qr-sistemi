@@ -17,9 +17,9 @@
                     <td><strong><?= esc($p['name']) ?></strong></td>
                     <td><?= $p['department_name'] ? esc($p['department_name']) : '<span class="muted">—</span>' ?></td>
                     <td class="muted"><?= esc($p['description'] ?: '—') ?></td>
-                    <td style="text-align:right;white-space:nowrap">
+                    <td class="row-actions">
                         <a href="<?= site_url('admin/positions/' . $p['id'] . '/edit') ?>">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/positions/' . $p['id'] . '/delete') ?>" style="display:inline;margin-left:8px" onsubmit="return confirm('Bu pozisyon silinsin mi?')">
+                        <form method="post" action="<?= site_url('admin/positions/' . $p['id'] . '/delete') ?>" onsubmit="return confirm('Bu pozisyon silinsin mi?')">
                             <?= csrf_field() ?>
                             <button class="btn btn-danger-soft btn-sm" type="submit">Sil</button>
                         </form>

@@ -188,5 +188,13 @@ $pendingReq = ($loggedIn && $role === 'admin') ? (count((new \App\Models\LeaveRe
     });
 })();
 </script>
+<script>
+(function(){
+    // Mobilde menü linkine dokununca off-canvas paneli kapat (anlık his + güvenli kapanma)
+    document.querySelectorAll('.sidebar a').forEach(function(a){
+        a.addEventListener('click', function(){ document.body.classList.remove('nav-open'); });
+    });
+})();
+</script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?= $this->extend('layout/app') ?>
 <?= $this->section('content') ?>
 <h1>Bildirimler</h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px">Son 50 bildirim</p>
+<p class="page-sub">Son 50 bildirim</p>
 <div class="card">
     <?php if (empty($list)): ?>
         <?= view('partials/empty', ['title' => 'Bildirim yok', 'message' => 'Henüz bir bildirimin yok.']) ?>

@@ -3,7 +3,7 @@
 <?php $dayLabels = [1 => 'Pzt', 2 => 'Sal', 3 => 'Çar', 4 => 'Per', 5 => 'Cum', 6 => 'Cmt', 7 => 'Paz']; ?>
 <div class="card-head">
     <h1>Vardiyalar <span class="count-pill"><?= count($shifts) ?></span></h1>
-    <div style="display:flex;gap:8px">
+    <div class="btn-group">
         <a class="btn btn-outline" href="<?= site_url('admin/shift-schedule') ?>">Haftalık plan</a>
         <a class="btn btn-primary" href="<?= site_url('admin/shifts/new') ?>">+ Yeni vardiya</a>
     </div>
@@ -24,9 +24,9 @@
                     <td>
                         <?php foreach (array_filter(explode(',', (string) ($s['workdays'] ?? ''))) as $d): ?><span class="badge badge-grey" style="margin-right:3px"><?= $dayLabels[(int) $d] ?? esc($d) ?></span><?php endforeach; ?>
                     </td>
-                    <td style="text-align:right;white-space:nowrap">
+                    <td class="row-actions">
                         <a href="<?= site_url('admin/shifts/' . $s['id'] . '/edit') ?>">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/shifts/' . $s['id'] . '/delete') ?>" style="display:inline;margin-left:8px" onsubmit="return confirm('Bu vardiya silinsin mi?')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
+                        <form method="post" action="<?= site_url('admin/shifts/' . $s['id'] . '/delete') ?>" onsubmit="return confirm('Bu vardiya silinsin mi?')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
                     </td>
                 </tr>
             <?php endforeach; ?>

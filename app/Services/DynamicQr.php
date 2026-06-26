@@ -16,8 +16,13 @@ class DynamicQr
     {
         $token = bin2hex(random_bytes(16));
         $now   = time();
+        $model = new QrTokenModel();
 
-        (new QrTokenModel())->insert([
+        // Yeni kod uretilince onceki kullanilmamis kodlar gecersiz olur ->
+        // sadece ekrandaki guncel QR ile giris yapilabilir.
+        $model->invalidateForLocation($locationId);
+
+        $model->insert([
             'location_id' => $locationId,
             'token'       => $token,
             'issued_at'   => date('Y-m-d H:i:s', $now),

@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 <?php $isEdit = $department !== null; ?>
 <h1><?= $isEdit ? 'Departmanı düzenle' : 'Yeni departman' ?></h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px"><a href="<?= site_url('admin/departments') ?>">&larr; Departmanlar</a></p>
+<p class="back-link"><a href="<?= site_url('admin/departments') ?>">&larr; Departmanlar</a></p>
 <div class="card pad-lg" style="max-width:520px">
     <form method="post" action="<?= $isEdit ? site_url('admin/departments/' . $department['id']) : site_url('admin/departments') ?>">
         <?= csrf_field() ?>

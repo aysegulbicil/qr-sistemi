@@ -6,7 +6,7 @@ $pos  = $emp['position_name'] ?? null;
 $dept = $emp['department_name'] ?? null;
 $meta = ($pos ?: 'Pozisyon atanmamış') . ($dept ? ' · ' . $dept : '');
 ?>
-<p class="muted" style="margin-bottom:14px"><a href="<?= site_url('admin/employees') ?>">&larr; Personeller</a></p>
+<p class="back-link"><a href="<?= site_url('admin/employees') ?>">&larr; Personeller</a></p>
 
 <div class="card pad-lg">
     <div class="profile-head">

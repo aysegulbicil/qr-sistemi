@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 <?php $rb = static fn (string $s) => match ($s) { 'approved' => ['Onaylandı', 'badge-green'], 'rejected' => ['Reddedildi', 'badge-grey'], default => ['Bekliyor', 'badge-amber'] }; ?>
 <h1>Taleplerim</h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px">İzin ve avans taleplerin</p>
+<p class="page-sub">İzin ve avans taleplerin</p>
 
 <div class="profile-grid">
     <div class="card">

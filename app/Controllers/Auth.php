@@ -23,7 +23,7 @@ class Auth extends BaseController
         $user = (new UserModel())->findByUsername($username);
 
         if ($user === null || ! $user['is_active'] || ! password_verify($password, $user['password_hash'])) {
-            return redirect()->back()->withInput()->with('error', 'Invalid username or password.');
+            return redirect()->back()->withInput()->with('error', 'Kullanıcı adı veya parola hatalı.');
         }
 
         session()->set([
@@ -42,6 +42,6 @@ class Auth extends BaseController
     {
         session()->destroy();
 
-        return redirect()->to('/login')->with('message', 'You have been signed out.');
+        return redirect()->to('/login')->with('message', 'Çıkış yapıldı.');
     }
 }

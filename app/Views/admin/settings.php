@@ -1,7 +1,7 @@
 <?= $this->extend('layout/app') ?>
 <?= $this->section('content') ?>
 <h1>Ayarlar</h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px">Şirket çalışma kuralları ve maaş parametreleri</p>
+<p class="page-sub">Şirket çalışma kuralları ve maaş parametreleri</p>
 <div class="card pad-lg" style="max-width:620px">
     <form method="post" action="<?= site_url('admin/settings') ?>">
         <?= csrf_field() ?>

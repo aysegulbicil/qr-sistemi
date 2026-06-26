@@ -21,6 +21,7 @@ class Dashboard extends BaseController
         return view('dashboard', [
             'checkedIn' => $model->isCheckedIn($userId),
             'scan'      => session()->get('scan_context'),
+            'canPunch'  => scan_is_fresh(session()->get('scan_context')),
             'today'     => $summary,
         ]);
     }

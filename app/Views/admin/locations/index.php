@@ -19,10 +19,10 @@
                     <td><span class="badge <?= qr_effective_mode($l['qr_mode']) === 'dynamic' ? 'badge-blue' : 'badge-grey' ?>"><?= qr_effective_mode($l['qr_mode']) === 'dynamic' ? 'Dinamik' : 'Sabit' ?></span></td>
                     <td><?php if (! empty($l['enforce_geo'])): ?><span class="badge badge-green">GPS zorunlu</span><?php elseif ($l['geo_lat'] !== null): ?><span class="badge badge-grey">GPS var</span><?php else: ?><span class="muted">—</span><?php endif; ?></td>
                     <td><span class="badge <?= $l['is_active'] ? 'badge-green' : 'badge-grey' ?>"><?= $l['is_active'] ? 'Aktif' : 'Pasif' ?></span></td>
-                    <td style="text-align:right;white-space:nowrap">
+                    <td class="row-actions">
                         <a href="<?= site_url('admin/locations/' . $l['id'] . '/qr') ?>">QR</a>
-                        <a href="<?= site_url('admin/locations/' . $l['id'] . '/edit') ?>" style="margin-left:10px">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/locations/' . $l['id'] . '/delete') ?>" style="display:inline;margin-left:8px" onsubmit="return confirm('Bu lokasyon silinsin mi?')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
+                        <a href="<?= site_url('admin/locations/' . $l['id'] . '/edit') ?>">Düzenle</a>
+                        <form method="post" action="<?= site_url('admin/locations/' . $l['id'] . '/delete') ?>" onsubmit="return confirm('Bu lokasyon silinsin mi?')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
                     </td>
                 </tr>
             <?php endforeach; ?>

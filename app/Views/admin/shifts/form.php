@@ -6,7 +6,7 @@ $checkedDays = $isEdit ? array_map('strval', array_filter(explode(',', (string) 
 $dayLabels   = [1 => 'Pazartesi', 2 => 'Salı', 3 => 'Çarşamba', 4 => 'Perşembe', 5 => 'Cuma', 6 => 'Cumartesi', 7 => 'Pazar'];
 ?>
 <h1><?= $isEdit ? 'Vardiyayı düzenle' : 'Yeni vardiya' ?></h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px"><a href="<?= site_url('admin/shifts') ?>">&larr; Vardiyalar</a></p>
+<p class="back-link"><a href="<?= site_url('admin/shifts') ?>">&larr; Vardiyalar</a></p>
 <div class="card pad-lg" style="max-width:560px">
     <form method="post" action="<?= $isEdit ? site_url('admin/shifts/' . $shift['id']) : site_url('admin/shifts') ?>">
         <?= csrf_field() ?>

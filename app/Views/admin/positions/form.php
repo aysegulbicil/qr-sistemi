@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 <?php $isEdit = $position !== null; ?>
 <h1><?= $isEdit ? 'Pozisyonu düzenle' : 'Yeni pozisyon' ?></h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px"><a href="<?= site_url('admin/positions') ?>">&larr; Pozisyonlar</a></p>
+<p class="back-link"><a href="<?= site_url('admin/positions') ?>">&larr; Pozisyonlar</a></p>
 <div class="card pad-lg" style="max-width:520px">
     <form method="post" action="<?= $isEdit ? site_url('admin/positions/' . $position['id']) : site_url('admin/positions') ?>">
         <?= csrf_field() ?>

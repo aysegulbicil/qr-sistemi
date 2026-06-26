@@ -85,3 +85,33 @@ if (! function_exists('tr_date')) {
         return date('j', $ts) . ' ' . $months[(int) date('n', $ts)] . ' ' . date('Y', $ts);
     }
 }
+
+if (! function_exists('scan_is_fresh')) {
+    /**
+     * Bir okutma baglami giris/cikis icin hala taze mi? (varsayilan 180 sn).
+     */
+    function scan_is_fresh(?array $scan, int $maxAgeSeconds = 180): bool
+    {
+        if (empty($scan['at'])) {
+            return false;
+        }
+        $t = strtotime((string) $scan['at']);
+
+        return $t !== false && (time() - $t) <= $maxAgeSeconds;
+    }
+}
+
+if (! function_exists('slugify_code')) {
+    /**
+     * URL-guvenli kod uretir: Turkce harfleri sadelestirir, kucuk harfe cevirir,
+     * harf/rakam disini tireye donusturur. "Giris Kapisi" -> "giris-kapisi".
+     */
+    function slugify_code(string $raw): string
+    {
+        $map = ['ş'=>'s','Ş'=>'s','ı'=>'i','İ'=>'i','ğ'=>'g','Ğ'=>'g','ç'=>'c','Ç'=>'c','ö'=>'o','Ö'=>'o','ü'=>'u','Ü'=>'u'];
+        $s   = strtr($raw, $map);
+        $s   = mb_strtolower($s, 'UTF-8');
+        $s   = preg_replace('/[^a-z0-9]+/', '-', $s);
+        return trim((string) $s, '-');
+    }
+}

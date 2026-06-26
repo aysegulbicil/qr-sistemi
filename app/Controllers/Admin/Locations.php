@@ -32,29 +32,31 @@ class Locations extends BaseController
 
     public function create()
     {
-        if (! $this->validate(['code' => 'required|max_length[50]|is_unique[locations.code]', 'name' => 'required'])) {
-            return redirect()->back()->withInput()->with('error', implode(' ', $this->validator->getErrors()));
+        $code = slugify_code((string) $this->request->getPost('code'));
+        if ($error = $this->validateLocation($code, null)) {
+            return redirect()->back()->withInput()->with('error', $error);
         }
 
-        $data              = $this->payload();
+        $data                 = $this->payload($code);
         $data['token_secret'] = $data['qr_mode'] === 'dynamic' ? bin2hex(random_bytes(16)) : null;
         $data['is_active']    = 1;
         (new LocationModel())->insert($data);
 
-        return redirect()->to('/admin/locations')->with('message', 'Lokasyon eklendi.');
+        return redirect()->to('/admin/locations')->with('message', 'Lokasyon eklendi. Kod: ' . $code);
     }
 
     public function update(int $id)
     {
-        if (! $this->validate(['code' => "required|max_length[50]|is_unique[locations.code,id,{$id}]", 'name' => 'required'])) {
-            return redirect()->back()->withInput()->with('error', implode(' ', $this->validator->getErrors()));
+        $code = slugify_code((string) $this->request->getPost('code'));
+        if ($error = $this->validateLocation($code, $id)) {
+            return redirect()->back()->withInput()->with('error', $error);
         }
 
-        $data              = $this->payload();
+        $data              = $this->payload($code);
         $data['is_active'] = $this->request->getPost('is_active') ? 1 : 0;
         (new LocationModel())->update($id, $data);
 
-        return redirect()->to('/admin/locations')->with('message', 'Lokasyon güncellendi.');
+        return redirect()->to('/admin/locations')->with('message', 'Lokasyon güncellendi. Kod: ' . $code);
     }
 
     public function delete(int $id)
@@ -92,14 +94,33 @@ class Locations extends BaseController
         return $this->response->setJSON(['url' => $base, 'ttl' => 0]);
     }
 
-    private function payload(): array
+    private function validateLocation(string $code, ?int $id): ?string
+    {
+        if (trim((string) $this->request->getPost('name')) === '') {
+            return 'Ad alanı zorunlu.';
+        }
+        if ($code === '') {
+            return 'Geçerli bir kod gir (örn. ana-giris). Kod yalnızca harf, rakam ve tire içerebilir.';
+        }
+        if (strlen($code) > 50) {
+            return 'Kod çok uzun (en fazla 50 karakter).';
+        }
+        $existing = (new LocationModel())->where('code', $code)->first();
+        if ($existing !== null && (int) $existing['id'] !== (int) $id) {
+            return 'Bu kod zaten kullanılıyor: ' . $code;
+        }
+
+        return null;
+    }
+
+    private function payload(string $code): array
     {
         $lat = $this->request->getPost('geo_lat');
         $lng = $this->request->getPost('geo_lng');
         $rad = $this->request->getPost('geo_radius_m');
 
         return [
-            'code'         => (string) $this->request->getPost('code'),
+            'code'         => $code,
             'name'         => (string) $this->request->getPost('name'),
             'qr_mode'      => (qr_dynamic_enabled() && $this->request->getPost('qr_mode') === 'dynamic') ? 'dynamic' : 'fixed',
             'geo_lat'      => is_numeric($lat) ? $lat : null,

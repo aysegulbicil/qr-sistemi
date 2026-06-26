@@ -4,7 +4,7 @@
 <h1><?= esc($location['name']) ?>
     <span class="badge <?= $mode === 'dynamic' ? 'badge-blue' : 'badge-grey' ?>" style="vertical-align:middle"><?= $mode === 'dynamic' ? 'Dinamik' : 'Sabit' ?></span>
 </h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px"><a href="<?= site_url('admin/locations') ?>">&larr; Lokasyonlar</a></p>
+<p class="back-link"><a href="<?= site_url('admin/locations') ?>">&larr; Lokasyonlar</a></p>
 <div class="card pad-lg center">
     <div id="qr" class="qr-box">Yükleniyor…</div>
     <p class="muted" id="hint" style="margin:14px 0 4px"></p>

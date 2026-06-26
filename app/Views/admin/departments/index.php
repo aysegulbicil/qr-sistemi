@@ -16,9 +16,9 @@
                 <tr>
                     <td><strong><?= esc($d['name']) ?></strong></td>
                     <td class="muted"><?= esc($d['description'] ?: '—') ?></td>
-                    <td style="text-align:right;white-space:nowrap">
+                    <td class="row-actions">
                         <a href="<?= site_url('admin/departments/' . $d['id'] . '/edit') ?>">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/departments/' . $d['id'] . '/delete') ?>" style="display:inline;margin-left:8px" onsubmit="return confirm('Bu departman silinsin mi?')">
+                        <form method="post" action="<?= site_url('admin/departments/' . $d['id'] . '/delete') ?>" onsubmit="return confirm('Bu departman silinsin mi?')">
                             <?= csrf_field() ?>
                             <button class="btn btn-danger-soft btn-sm" type="submit">Sil</button>
                         </form>

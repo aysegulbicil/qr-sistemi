@@ -8,7 +8,7 @@ foreach ($days as $d) {
 }
 ?>
 <h1>Geçmişim</h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px">Son 14 gün</p>
+<p class="page-sub">Son 14 gün</p>
 
 <div class="tiles page-tiles">
     <div class="tile"><span class="box ic in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="M3 10h18"/></svg></span><div><div class="v"><?= (int) $present ?></div><div class="l">Gelinen gün</div></div></div>
@@ -20,7 +20,7 @@ foreach ($days as $d) {
 <div class="card">
     <div class="table-scroll">
         <table class="data">
-            <thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th>Geç</th><th>Fazla mesai</th><th>Çalışılan</th><th>Durum</th></tr></thead>
+            <thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th class="num">Geç</th><th class="num">Fazla mesai</th><th class="num">Çalışılan</th><th>Durum</th></tr></thead>
             <tbody>
             <?php foreach ($days as $date => $row): ?>
                 <?php [$lbl, $cls] = status_label($row['status']); ?>
@@ -28,9 +28,9 @@ foreach ($days as $d) {
                     <td><?= esc(date('d.m.Y', strtotime($date))) ?></td>
                     <td><?= esc(hhmm($row['first_in'])) ?></td>
                     <td><?= esc(hhmm($row['last_out'])) ?></td>
-                    <td><?= $row['late_minutes'] ? esc(minutes_to_hm((int) $row['late_minutes'])) : '—' ?></td>
-                    <td><?= $row['overtime_minutes'] ? esc(minutes_to_hm((int) $row['overtime_minutes'])) : '—' ?></td>
-                    <td><?= $row['worked_minutes'] ? esc(minutes_to_hm((int) $row['worked_minutes'])) : '—' ?></td>
+                    <td class="num"><?= $row['late_minutes'] ? esc(minutes_to_hm((int) $row['late_minutes'])) : '—' ?></td>
+                    <td class="num"><?= $row['overtime_minutes'] ? esc(minutes_to_hm((int) $row['overtime_minutes'])) : '—' ?></td>
+                    <td class="num"><?= $row['worked_minutes'] ? esc(minutes_to_hm((int) $row['worked_minutes'])) : '—' ?></td>
                     <td><span class="badge <?= $cls ?>"><?= esc($lbl) ?></span></td>
                 </tr>
             <?php endforeach; ?>

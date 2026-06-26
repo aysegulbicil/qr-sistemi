@@ -1,7 +1,7 @@
 <?= $this->extend('layout/app') ?>
 <?= $this->section('content') ?>
 <?php $cur = $p['currency']; ?>
-<p class="muted" style="margin-bottom:12px"><a href="<?= site_url('admin/payroll') . '?month=' . esc($ym) ?>">&larr; Puantaj</a></p>
+<p class="back-link"><a href="<?= site_url('admin/payroll') . '?month=' . esc($ym) ?>">&larr; Puantaj</a></p>
 
 <div class="card pad-lg">
     <div class="profile-head">
@@ -33,7 +33,7 @@
             <div class="r"><span class="k">Fazla mesai (<?= esc(minutes_to_hm((int) $p['overtime_minutes'])) ?> × <?= esc($p['overtime_mult']) ?>)</span><span class="v">+ <?= esc(money($p['overtime_pay'], $cur)) ?></span></div>
             <div class="r"><span class="k">Avans</span><span class="v">− <?= esc(money($p['advances_total'], $cur)) ?></span></div>
             <div class="r"><span class="k">Kesinti</span><span class="v">− <?= esc(money($p['deductions_total'], $cur)) ?></span></div>
-            <div class="r" style="border-top:2px solid var(--line);margin-top:4px;padding-top:12px"><span class="k" style="color:var(--ink);font-weight:700">Net maaş</span><span class="v" style="font-size:1.15rem;color:var(--brand-700)"><?= esc(money($p['net'], $cur)) ?></span></div>
+            <div class="r total"><span class="k">Net maaş</span><span class="v"><?= esc(money($p['net'], $cur)) ?></span></div>
         </div>
     </div>
 
@@ -47,7 +47,7 @@
                     <span class="box ic <?= $a['type'] === 'advance' ? 'ot' : 'dng' ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
                     <span class="txt"><b><?= $a['type'] === 'advance' ? 'Avans' : 'Kesinti' ?></b><span><?= esc($a['reason'] ?: '—') ?></span></span>
                     <span class="num">− <?= esc(money((float) $a['amount'], $cur)) ?></span>
-                    <form method="post" action="<?= site_url('admin/payroll/' . $u['id'] . '/advance/' . $a['id'] . '/delete') ?>" style="margin-left:10px" onsubmit="return confirm('Silinsin mi?')"><?= csrf_field() ?><input type="hidden" name="month" value="<?= esc($ym) ?>"><button class="btn btn-link btn-sm" style="color:var(--dng-ink)">Sil</button></form>
+                    <form method="post" action="<?= site_url('admin/payroll/' . $u['id'] . '/advance/' . $a['id'] . '/delete') ?>" onsubmit="return confirm('Silinsin mi?')"><?= csrf_field() ?><input type="hidden" name="month" value="<?= esc($ym) ?>"><button class="btn btn-link btn-sm" style="color:var(--dng-ink)">Sil</button></form>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>

@@ -14,10 +14,17 @@ class Scan extends BaseController
 {
     public function location(string $code)
     {
-        $location = (new LocationModel())->findByCode($code);
+        $location = (new LocationModel())->findByCode(trim($code));
 
-        if ($location === null || ! $location['is_active']) {
-            return view('scan_error', ['message' => 'Unknown or inactive QR location.']);
+        if ($location === null) {
+            return view('scan_error', [
+                'message' => 'Bu QR adresi sistemde kayıtlı değil (okunan kod: "' . $code . '"). Yöneticiyle kontrol et.',
+            ]);
+        }
+        if (! $location['is_active']) {
+            return view('scan_error', [
+                'message' => '"' . $location['name'] . '" lokasyonu şu an pasif. Yöneticinin aktif etmesi gerekiyor.',
+            ]);
         }
 
         // Dynamic QR: a valid, unexpired, single-use token must be present.
@@ -25,7 +32,7 @@ class Scan extends BaseController
             $token = (string) $this->request->getGet('t');
             if ($token === '' || ! (new DynamicQr())->consume($token, (int) $location['id'])) {
                 return view('scan_error', [
-                    'message' => 'This QR code has expired. Please scan the current code on the screen again.',
+                    'message' => 'Bu QR kodunun süresi doldu. Ekrandaki güncel kodu tekrar okut.',
                 ]);
             }
         }
@@ -34,6 +41,7 @@ class Scan extends BaseController
         session()->set('scan_context', [
             'location_id'   => (int) $location['id'],
             'location_name' => $location['name'],
+            'qr_mode'       => qr_effective_mode($location['qr_mode']),
             'at'            => date('Y-m-d H:i:s'),
         ]);
 

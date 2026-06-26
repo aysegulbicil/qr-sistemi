@@ -20,6 +20,15 @@ class Attendance extends BaseController
             return redirect()->to('/dashboard')->with('error', 'Geçersiz işlem.');
         }
 
+        $context = session()->get('scan_context');
+        if (empty($context['location_id'])) {
+            return redirect()->to('/dashboard')->with('error', 'Önce kapıdaki QR kodunu okutmalısın.');
+        }
+        if (! scan_is_fresh($context)) {
+            session()->remove('scan_context');
+            return redirect()->to('/dashboard')->with('error', 'Okutmanın süresi doldu. Kapıdaki QR kodunu tekrar okut.');
+        }
+
         $model     = new AttendanceLogModel();
         $checkedIn = $model->isCheckedIn($userId);
 

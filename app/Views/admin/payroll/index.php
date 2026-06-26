@@ -19,7 +19,7 @@
     <?php else: ?>
     <div class="table-scroll">
         <table class="data">
-            <thead><tr><th>Personel</th><th>Gün</th><th>Geç</th><th>Fazla mesai</th><th>Eksik</th><th>Net maaş</th><th></th></tr></thead>
+            <thead><tr><th>Personel</th><th class="num">Gün</th><th class="num">Geç</th><th class="num">Fazla mesai</th><th class="num">Eksik</th><th class="num">Net maaş</th><th></th></tr></thead>
             <tbody>
             <?php foreach ($rows as $row): $u = $row['user']; $p = $row['p']; ?>
                 <tr>
@@ -29,11 +29,11 @@
                             <span><strong><?= esc($u['full_name']) ?></strong><br><span class="muted-sm"><?= esc(salary_type_label($p['salary_type'])) ?> · <?= esc(money($p['salary_amount'], $p['currency'])) ?></span></span>
                         </a>
                     </td>
-                    <td><?= (int) $p['present_days'] ?> / <?= (int) $p['expected_days'] ?></td>
-                    <td><?= $p['late_minutes'] ? esc(minutes_to_hm((int) $p['late_minutes'])) : '—' ?></td>
-                    <td><?= $p['overtime_minutes'] ? esc(minutes_to_hm((int) $p['overtime_minutes'])) : '—' ?></td>
-                    <td><?= $p['missing_days'] ? '<span class="badge badge-amber">' . (int) $p['missing_days'] . ' gün</span>' : '—' ?></td>
-                    <td><strong><?= esc(money($p['net'], $p['currency'])) ?></strong></td>
+                    <td class="num"><?= (int) $p['present_days'] ?> / <?= (int) $p['expected_days'] ?></td>
+                    <td class="num"><?= $p['late_minutes'] ? esc(minutes_to_hm((int) $p['late_minutes'])) : '—' ?></td>
+                    <td class="num"><?= $p['overtime_minutes'] ? esc(minutes_to_hm((int) $p['overtime_minutes'])) : '—' ?></td>
+                    <td class="num"><?= $p['missing_days'] ? '<span class="badge badge-amber">' . (int) $p['missing_days'] . ' gün</span>' : '—' ?></td>
+                    <td class="num"><strong><?= esc(money($p['net'], $p['currency'])) ?></strong></td>
                     <td class="text-right"><a href="<?= site_url('admin/payroll/' . $u['id']) . '?month=' . esc($ym) ?>">Detay</a></td>
                 </tr>
             <?php endforeach; ?>

@@ -6,12 +6,12 @@ $v      = static fn (string $k) => esc($isEdit ? ($location[$k] ?? '') : old($k)
 $mode   = qr_effective_mode($isEdit ? ($location['qr_mode'] ?? 'fixed') : (old('qr_mode') ?: 'fixed'));
 ?>
 <h1><?= $isEdit ? 'Lokasyonu düzenle' : 'Yeni lokasyon' ?></h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px"><a href="<?= site_url('admin/locations') ?>">&larr; Lokasyonlar</a></p>
+<p class="back-link"><a href="<?= site_url('admin/locations') ?>">&larr; Lokasyonlar</a></p>
 <div class="card pad-lg" style="max-width:620px">
     <form method="post" action="<?= $isEdit ? site_url('admin/locations/' . $location['id']) : site_url('admin/locations') ?>">
         <?= csrf_field() ?>
         <div class="grid2">
-            <div class="field"><label>Kod * <span class="hint">(QR adresinde)</span></label><input type="text" name="code" value="<?= $v('code') ?>" placeholder="main-gate" required></div>
+            <div class="field"><label>Kod * <span class="hint">(QR adresinde; otomatik sadeleştirilir)</span></label><input type="text" name="code" value="<?= $v('code') ?>" placeholder="main-gate" required></div>
             <div class="field"><label>Ad *</label><input type="text" name="name" value="<?= $v('name') ?>" placeholder="Ana Giriş" required></div>
         </div>
         <div class="field"><label>QR modu</label>

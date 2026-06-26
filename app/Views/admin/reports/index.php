@@ -3,7 +3,7 @@
 <?php $qs = http_build_query(['type' => $type, 'start' => $start, 'end' => $end, 'dept' => $dept]); ?>
 <div class="card-head">
     <h1>Raporlar</h1>
-    <div style="display:flex;gap:8px">
+    <div class="btn-group">
         <a class="btn btn-outline btn-sm" href="<?= site_url('admin/reports/export') . '?' . $qs ?>">Excel (CSV)</a>
         <a class="btn btn-outline btn-sm" href="<?= site_url('admin/reports/print') . '?' . $qs ?>" target="_blank" rel="noopener">Yazdır / PDF</a>
     </div>

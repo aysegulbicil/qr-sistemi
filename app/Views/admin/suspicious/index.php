@@ -1,14 +1,14 @@
 <?= $this->extend('layout/app') ?>
 <?= $this->section('content') ?>
 <h1>Şüpheli işlemler</h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px">Konum dışı veya doğrulanamayan giriş/çıkış denemeleri</p>
+<p class="page-sub">Konum dışı veya doğrulanamayan giriş/çıkış denemeleri</p>
 <div class="card">
     <?php if (empty($events)): ?>
         <?= view('partials/empty', ['title' => 'Şüpheli işlem yok', 'message' => 'Kayıtlı şüpheli işlem bulunmuyor.']) ?>
     <?php else: ?>
     <div class="table-scroll">
         <table class="data">
-            <thead><tr><th>Tarih</th><th>Personel</th><th>Lokasyon</th><th>Neden</th><th>Mesafe</th><th>Yön</th></tr></thead>
+            <thead><tr><th>Tarih</th><th>Personel</th><th>Lokasyon</th><th>Neden</th><th class="num">Mesafe</th><th>Yön</th></tr></thead>
             <tbody>
             <?php foreach ($events as $e): ?>
                 <tr>
@@ -16,7 +16,7 @@
                     <td><?= esc($e['full_name'] ?: '—') ?></td>
                     <td><?= esc($e['location_name'] ?: '—') ?></td>
                     <td><span class="badge badge-amber"><?= esc($e['reason']) ?></span></td>
-                    <td><?= $e['distance_m'] !== null ? esc($e['distance_m']) . ' m' : '—' ?></td>
+                    <td class="num"><?= $e['distance_m'] !== null ? esc($e['distance_m']) . ' m' : '—' ?></td>
                     <td><?= $e['type'] === 'in' ? 'Giriş' : ($e['type'] === 'out' ? 'Çıkış' : '—') ?></td>
                 </tr>
             <?php endforeach; ?>

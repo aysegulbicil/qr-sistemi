@@ -24,4 +24,13 @@ class QrTokenModel extends Model
             ->where('used_at', null)
             ->first();
     }
+
+    /** Invalidates all still-unused tokens for a location (called when a new code is issued). */
+    public function invalidateForLocation(int $locationId): void
+    {
+        $this->builder()
+            ->where('location_id', $locationId)
+            ->where('used_at', null)
+            ->update(['used_at' => date('Y-m-d H:i:s')]);
+    }
 }

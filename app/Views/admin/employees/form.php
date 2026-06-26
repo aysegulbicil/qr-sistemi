@@ -6,7 +6,7 @@ $val = static fn (string $k, $default = '') => esc($employee[$k] ?? old($k) ?? $
 $sel = static fn (string $k, $v) => (string) ($employee[$k] ?? old($k) ?? '') === (string) $v ? 'selected' : '';
 ?>
 <h1><?= $isEdit ? 'Personeli düzenle' : 'Yeni personel' ?></h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px"><a href="<?= site_url('admin/employees') ?>">&larr; Personeller</a></p>
+<p class="back-link"><a href="<?= site_url('admin/employees') ?>">&larr; Personeller</a></p>
 
 <div class="card pad-lg" style="max-width:720px">
     <form method="post" action="<?= $isEdit ? site_url('admin/employees/' . $employee['id']) : site_url('admin/employees') ?>">
