@@ -1,7 +1,7 @@
 <?= $this->extend('layout/app') ?>
 <?= $this->section('content') ?>
 <h1>Talepler</h1>
-<p class="muted" style="margin-top:-2px;margin-bottom:18px">Bekleyen izin ve avans talepleri</p>
+<p class="page-sub">Bekleyen izin ve avans talepleri</p>
 
 <div class="card">
     <div class="card-head"><h2>İzin talepleri <span class="count-pill"><?= count($leaves) ?></span></h2></div>
@@ -19,9 +19,9 @@
                     <td><?= esc(date('d.m.Y', strtotime($l['start_date']))) ?> – <?= esc(date('d.m.Y', strtotime($l['end_date']))) ?></td>
                     <td><?= (float) $l['days'] ?></td>
                     <td class="muted"><?= esc($l['reason'] ?: '—') ?></td>
-                    <td style="text-align:right;white-space:nowrap">
-                        <form method="post" action="<?= site_url('admin/requests/leave/' . $l['id'] . '/approve') ?>" style="display:inline"><?= csrf_field() ?><button class="btn btn-primary btn-sm">Onayla</button></form>
-                        <form method="post" action="<?= site_url('admin/requests/leave/' . $l['id'] . '/reject') ?>" style="display:inline;margin-left:6px"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Reddet</button></form>
+                    <td class="row-actions">
+                        <form method="post" action="<?= site_url('admin/requests/leave/' . $l['id'] . '/approve') ?>"><?= csrf_field() ?><button class="btn btn-primary btn-sm">Onayla</button></form>
+                        <form method="post" action="<?= site_url('admin/requests/leave/' . $l['id'] . '/reject') ?>"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Reddet</button></form>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -46,9 +46,9 @@
                     <td><?= esc(money((float) $a['amount'])) ?></td>
                     <td><?= esc(sprintf('%02d/%04d', $a['period_month'], $a['period_year'])) ?></td>
                     <td class="muted"><?= esc($a['reason'] ?: '—') ?></td>
-                    <td style="text-align:right;white-space:nowrap">
-                        <form method="post" action="<?= site_url('admin/requests/advance/' . $a['id'] . '/approve') ?>" style="display:inline"><?= csrf_field() ?><button class="btn btn-primary btn-sm">Onayla</button></form>
-                        <form method="post" action="<?= site_url('admin/requests/advance/' . $a['id'] . '/reject') ?>" style="display:inline;margin-left:6px"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Reddet</button></form>
+                    <td class="row-actions">
+                        <form method="post" action="<?= site_url('admin/requests/advance/' . $a['id'] . '/approve') ?>"><?= csrf_field() ?><button class="btn btn-primary btn-sm">Onayla</button></form>
+                        <form method="post" action="<?= site_url('admin/requests/advance/' . $a['id'] . '/reject') ?>"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Reddet</button></form>
                     </td>
                 </tr>
             <?php endforeach; ?>

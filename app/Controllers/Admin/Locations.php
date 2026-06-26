@@ -83,7 +83,7 @@ class Locations extends BaseController
 
         $base = rtrim(base_url(), '/') . '/q/' . $location['code'];
 
-        if ($location['qr_mode'] === 'dynamic') {
+        if (qr_effective_mode($location['qr_mode']) === 'dynamic') {
             $token = (new DynamicQr())->issue((int) $location['id']);
 
             return $this->response->setJSON(['url' => $base . '?t=' . $token, 'ttl' => DynamicQr::TTL_SECONDS]);
@@ -101,7 +101,7 @@ class Locations extends BaseController
         return [
             'code'         => (string) $this->request->getPost('code'),
             'name'         => (string) $this->request->getPost('name'),
-            'qr_mode'      => $this->request->getPost('qr_mode') === 'dynamic' ? 'dynamic' : 'fixed',
+            'qr_mode'      => (qr_dynamic_enabled() && $this->request->getPost('qr_mode') === 'dynamic') ? 'dynamic' : 'fixed',
             'geo_lat'      => is_numeric($lat) ? $lat : null,
             'geo_lng'      => is_numeric($lng) ? $lng : null,
             'geo_radius_m' => is_numeric($rad) ? (int) $rad : null,

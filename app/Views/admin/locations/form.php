@@ -3,7 +3,7 @@
 <?php
 $isEdit = $location !== null;
 $v      = static fn (string $k) => esc($isEdit ? ($location[$k] ?? '') : old($k));
-$mode   = $isEdit ? $location['qr_mode'] : (old('qr_mode') ?? 'fixed');
+$mode   = qr_effective_mode($isEdit ? ($location['qr_mode'] ?? 'fixed') : (old('qr_mode') ?: 'fixed'));
 ?>
 <h1><?= $isEdit ? 'Lokasyonu düzenle' : 'Yeni lokasyon' ?></h1>
 <p class="muted" style="margin-top:-2px;margin-bottom:18px"><a href="<?= site_url('admin/locations') ?>">&larr; Lokasyonlar</a></p>
@@ -15,10 +15,16 @@ $mode   = $isEdit ? $location['qr_mode'] : (old('qr_mode') ?? 'fixed');
             <div class="field"><label>Ad *</label><input type="text" name="name" value="<?= $v('name') ?>" placeholder="Ana Giriş" required></div>
         </div>
         <div class="field"><label>QR modu</label>
+            <?php if (qr_dynamic_enabled()): ?>
             <select name="qr_mode">
                 <option value="fixed" <?= $mode === 'fixed' ? 'selected' : '' ?>>Sabit (tek basılı kod)</option>
                 <option value="dynamic" <?= $mode === 'dynamic' ? 'selected' : '' ?>>Dinamik (30 sn'de yenilenen, ekran gerekir)</option>
             </select>
+            <?php else: ?>
+            <input type="hidden" name="qr_mode" value="fixed">
+            <input type="text" value="Sabit (tek basılı kod)" disabled>
+            <p class="hint" style="margin-top:6px">Bu kurulum yalnızca Sabit QR içerir.</p>
+            <?php endif; ?>
         </div>
 
         <div class="form-section"><div class="sec-title">Konum doğrulama (GPS)</div></div>

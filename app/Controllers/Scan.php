@@ -21,7 +21,7 @@ class Scan extends BaseController
         }
 
         // Dynamic QR: a valid, unexpired, single-use token must be present.
-        if ($location['qr_mode'] === 'dynamic') {
+        if (qr_effective_mode($location['qr_mode']) === 'dynamic') {
             $token = (string) $this->request->getGet('t');
             if ($token === '' || ! (new DynamicQr())->consume($token, (int) $location['id'])) {
                 return view('scan_error', [

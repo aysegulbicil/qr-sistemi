@@ -1,7 +1,8 @@
 <?= $this->extend('layout/app') ?>
 <?= $this->section('content') ?>
+<?php $mode = qr_effective_mode($location['qr_mode']); ?>
 <h1><?= esc($location['name']) ?>
-    <span class="badge <?= $location['qr_mode'] === 'dynamic' ? 'badge-blue' : 'badge-grey' ?>" style="vertical-align:middle"><?= $location['qr_mode'] === 'dynamic' ? 'Dinamik' : 'Sabit' ?></span>
+    <span class="badge <?= $mode === 'dynamic' ? 'badge-blue' : 'badge-grey' ?>" style="vertical-align:middle"><?= $mode === 'dynamic' ? 'Dinamik' : 'Sabit' ?></span>
 </h1>
 <p class="muted" style="margin-top:-2px;margin-bottom:18px"><a href="<?= site_url('admin/locations') ?>">&larr; Lokasyonlar</a></p>
 <div class="card pad-lg center">
@@ -13,7 +14,7 @@
 <script>
 (function () {
     var tokenUrl = <?= json_encode(site_url('admin/locations/' . $location['id'] . '/token')) ?>;
-    var mode     = <?= json_encode($location['qr_mode']) ?>;
+    var mode     = <?= json_encode($mode) ?>;
     var box  = document.getElementById('qr');
     var hint = document.getElementById('hint');
     function render(url){ var qr=qrcode(0,'M'); qr.addData(url); qr.make(); box.innerHTML=qr.createImgTag(6,12); }

@@ -36,11 +36,9 @@ class UserModel extends Model
             ->join('positions p', 'p.id = u.position_id', 'left');
     }
 
-    /** Listing with search (name/code/username), department & status filters, and safe sorting. */
-    public function listDetailed(string $search = '', string $sort = 'full_name', string $dir = 'asc', ?int $departmentId = null, string $status = ''): array
+    /** Apply search (name/code/username), department & status filters to a builder. */
+    private function applyListFilters($b, string $search, ?int $departmentId, string $status)
     {
-        $b = $this->detailed();
-
         if ($search !== '') {
             $b->groupStart()
                 ->like('u.full_name', $search)
@@ -55,11 +53,56 @@ class UserModel extends Model
             $b->where('u.employment_status', $status);
         }
 
+        return $b;
+    }
+
+    /** Listing with search, filters, safe sorting and optional pagination. */
+    public function listDetailed(string $search = '', string $sort = 'full_name', string $dir = 'asc', ?int $departmentId = null, string $status = '', ?int $limit = null, int $offset = 0): array
+    {
+        $b = $this->applyListFilters($this->detailed(), $search, $departmentId, $status);
+
         $allowed = ['full_name', 'employee_code', 'department_name', 'position_name', 'employment_status', 'role'];
         $sort    = in_array($sort, $allowed, true) ? $sort : 'full_name';
         $dir     = strtolower($dir) === 'desc' ? 'DESC' : 'ASC';
+        $b->orderBy($sort, $dir);
 
-        return $b->orderBy($sort, $dir)->get()->getResultArray();
+        if ($limit !== null) {
+            $b->limit($limit, max(0, $offset));
+        }
+
+        return $b->get()->getResultArray();
+    }
+
+    /** Row count for the same filters (pagination). */
+    public function countDetailed(string $search = '', ?int $departmentId = null, string $status = ''): int
+    {
+        return $this->applyListFilters($this->detailed(), $search, $departmentId, $status)->countAllResults();
+    }
+
+    /** Detailed rows for a set of ids (CSV export). */
+    public function forExport(array $ids): array
+    {
+        $ids = array_values(array_filter(array_map('intval', $ids)));
+        if ($ids === []) {
+            return [];
+        }
+
+        return $this->detailed()->whereIn('u.id', $ids)->orderBy('u.full_name', 'ASC')->get()->getResultArray();
+    }
+
+    /** Bulk employment-status update. Returns affected id count. */
+    public function bulkStatus(array $ids, string $status): int
+    {
+        $ids = array_values(array_filter(array_map('intval', $ids)));
+        if ($ids === [] || ! in_array($status, ['active', 'passive', 'terminated'], true)) {
+            return 0;
+        }
+        $this->db->table('users')->whereIn('id', $ids)->update([
+            'employment_status' => $status,
+            'updated_at'        => date('Y-m-d H:i:s'),
+        ]);
+
+        return count($ids);
     }
 
     public function findDetailed(int $id): ?array

@@ -16,7 +16,7 @@
                 <tr>
                     <td><span class="loc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><?= esc($l['name']) ?></td>
                     <td><code><?= esc($l['code']) ?></code></td>
-                    <td><span class="badge <?= $l['qr_mode'] === 'dynamic' ? 'badge-blue' : 'badge-grey' ?>"><?= $l['qr_mode'] === 'dynamic' ? 'Dinamik' : 'Sabit' ?></span></td>
+                    <td><span class="badge <?= qr_effective_mode($l['qr_mode']) === 'dynamic' ? 'badge-blue' : 'badge-grey' ?>"><?= qr_effective_mode($l['qr_mode']) === 'dynamic' ? 'Dinamik' : 'Sabit' ?></span></td>
                     <td><?php if (! empty($l['enforce_geo'])): ?><span class="badge badge-green">GPS zorunlu</span><?php elseif ($l['geo_lat'] !== null): ?><span class="badge badge-grey">GPS var</span><?php else: ?><span class="muted">—</span><?php endif; ?></td>
                     <td><span class="badge <?= $l['is_active'] ? 'badge-green' : 'badge-grey' ?>"><?= $l['is_active'] ? 'Aktif' : 'Pasif' ?></span></td>
                     <td style="text-align:right;white-space:nowrap">

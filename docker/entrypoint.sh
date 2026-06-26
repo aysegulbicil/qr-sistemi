@@ -3,11 +3,12 @@ set -e
 
 cd /var/www/html
 
-# CI4 uygulamasi mevcutsa ve bagimliliklar kurulu degilse composer install calistir
-if [ -f composer.json ] && [ ! -d vendor ]; then
-    echo "[entrypoint] composer.json bulundu -> composer install calistiriliyor..."
+# CI4 cekirdegi (vendor) kurulu degilse composer install calistir.
+# Kosul autoload.php uzerinden: bos/yarim bir vendor klasoru de kurulumu tetikler.
+if [ -f composer.json ] && [ ! -f vendor/autoload.php ]; then
+    echo "[entrypoint] vendor/ eksik -> composer install calistiriliyor..."
     composer install --no-interaction --prefer-dist --no-progress \
-      || echo "[entrypoint] composer install basarisiz. Elle: docker compose exec web composer install"
+      || echo "[entrypoint] composer install BASARISIZ. Elle calistir: docker compose exec web composer install"
 fi
 
 # CI4 'writable' klasoru: alt klasorleri olustur + yazma izinleri ver

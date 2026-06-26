@@ -27,6 +27,7 @@ $routes->group('admin', ['filter' => 'admin', 'namespace' => 'App\Controllers\Ad
     $routes->get('employees', 'Employees::index');
     $routes->get('employees/new', 'Employees::new');
     $routes->post('employees', 'Employees::create');
+    $routes->post('employees/bulk', 'Employees::bulk');
     $routes->get('employees/(:num)/edit', 'Employees::edit/$1');
     $routes->post('employees/(:num)', 'Employees::update/$1');
     $routes->get('employees/(:num)', 'Employees::show/$1');

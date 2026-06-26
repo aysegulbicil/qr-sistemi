@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DataTable önizleme — Kurumsal Klasik</title>
+<!-- app.css'ten gereken token + temel stiller (önizleme için) -->
+<style>
+:root{
+  --bg:#eef1f6; --surface:#ffffff; --surface-2:#f8fafc;
+  --ink:#0f1729; --muted:#64748b; --faint:#94a3b8; --line:#e7ecf3;
+  --brand:#2563eb; --brand-600:#1d4ed8; --brand-700:#1e40af; --brand-tint:#eff6ff;
+  --in-ink:#047857; --in-bg:#ecfdf5; --late-ink:#b45309; --late-bg:#fffbeb;
+  --neu-ink:#475569; --neu-bg:#f1f5f9; --ot-ink:#1d4ed8; --ot-bg:#eff6ff;
+  --radius:18px; --radius-sm:11px;
+  --shadow:0 1px 2px rgba(15,23,41,.04),0 1px 3px rgba(15,23,41,.06);
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;color:var(--ink);background:var(--bg);padding:30px;}
+a{color:var(--brand-600);text-decoration:none;}
+h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin:0;}
+.content{max-width:1160px;margin:0 auto;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);margin-bottom:20px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.count-pill{background:var(--neu-bg);color:var(--neu-ink);font-weight:700;font-size:.76rem;padding:3px 11px;border-radius:999px;}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:12px;padding:11px 18px;font-size:.95rem;font-weight:700;cursor:pointer;text-decoration:none;}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 10px 24px -12px rgba(37,99,235,.9);}
+table.data{width:100%;border-collapse:collapse;font-size:.92rem;}
+table.data th,table.data td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap;}
+table.data thead th{color:var(--muted);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;background:var(--surface-2);}
+table.data tbody tr:hover{background:var(--surface-2);}
+table.data tbody tr:last-child td{border-bottom:0;}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:700;}
+.badge-green{background:var(--in-bg);color:var(--in-ink);}
+.badge-amber{background:var(--late-bg);color:var(--late-ink);}
+.badge-grey{background:var(--neu-bg);color:var(--neu-ink);}
+.badge-blue{background:var(--ot-bg);color:var(--ot-ink);}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.filters select{width:auto;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:#fff;color:var(--ink);font:inherit;font-size:.92rem;}
+.cell-user{display:flex;align-items:center;gap:10px;color:inherit;}
+.mini-avatar{width:32px;height:32px;border-radius:50%;background:var(--brand-tint);color:var(--brand-700);display:grid;place-items:center;font-weight:700;font-size:.78rem;flex-shrink:0;}
+.stack{display:flex;flex-direction:column;}
+.muted{color:var(--muted);} .muted-sm{color:var(--muted);font-size:.78rem;}
+.row-actions a+a{margin-left:12px;}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<!-- TEST EDİLEN GERÇEK TEMA -->
+<link rel="stylesheet" href="public/assets/css/datatables.brand.css">
+</head>
+<body>
+<div class="content">
+  <div class="card-head">
+    <h1>Lokasyonlar <span class="count-pill">12</span></h1>
+    <a class="btn btn-primary" href="#">+ Yeni lokasyon</a>
+  </div>
+  <div class="card">
+    <table class="data" id="t1">
+      <thead><tr><th>Lokasyon</th><th>Kod</th><th>QR modu</th><th>Durum</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Genel Merkez</td><td>HQ-01</td><td><span class="badge badge-blue">Dinamik</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Ankara Şube</td><td>ANK-02</td><td><span class="badge badge-grey">Sabit</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>İzmir Depo</td><td>IZM-03</td><td><span class="badge badge-grey">Sabit</span></td><td><span class="badge badge-grey">Pasif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Bursa Üretim</td><td>BRS-04</td><td><span class="badge badge-blue">Dinamik</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Antalya Ofis</td><td>ANT-05</td><td><span class="badge badge-grey">Sabit</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Adana Şube</td><td>ADN-06</td><td><span class="badge badge-grey">Sabit</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Konya Depo</td><td>KNY-07</td><td><span class="badge badge-blue">Dinamik</span></td><td><span class="badge badge-grey">Pasif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Gaziantep Ofis</td><td>GZT-08</td><td><span class="badge badge-grey">Sabit</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Kayseri Şube</td><td>KYS-09</td><td><span class="badge badge-grey">Sabit</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Mersin Depo</td><td>MRS-10</td><td><span class="badge badge-blue">Dinamik</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Eskişehir Ofis</td><td>ESK-11</td><td><span class="badge badge-grey">Sabit</span></td><td><span class="badge badge-grey">Pasif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+        <tr><td>Samsun Şube</td><td>SMS-12</td><td><span class="badge badge-grey">Sabit</span></td><td><span class="badge badge-green">Aktif</span></td><td class="row-actions"><a href="#">QR</a><a href="#">Düzenle</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="public/assets/js/datatables.init.js"></script>
+</body>
+</html>

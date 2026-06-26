@@ -13,7 +13,7 @@
         th, td { border: 1px solid #ccc; padding: 6px 9px; text-align: left; }
         th { background: #f3f4f6; }
         .foot { margin-top: 18px; color: #999; font-size: 11px; }
-        .pbtn { background: #4f46e5; color: #fff; border: 0; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .pbtn { background: #2563eb; color: #fff; border: 0; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; }
         @media print { .noprint { display: none; } body { margin: 0; } }
     </style>
 </head>
