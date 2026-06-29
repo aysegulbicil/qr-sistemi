@@ -11,28 +11,19 @@
         <span class="dot <?= $checkedIn ? 'in' : 'out' ?>"></span>
         <span><?= $checkedIn ? 'Şu an içeridesin' : 'Şu an dışarıdasın' ?></span>
     </div>
-    <?php if (! empty($scan)): ?>
-        <p style="opacity:.9;margin:0 0 12px;position:relative;z-index:1">Okutulan nokta: <strong><?= esc($scan['location_name']) ?></strong></p>
-    <?php endif; ?>
     <?php if ($canPunch): ?>
     <form method="post" action="<?= site_url('attendance/punch') ?>" style="position:relative;z-index:1">
         <?= csrf_field() ?>
         <input type="hidden" name="geo_lat" id="dash_lat">
         <input type="hidden" name="geo_lng" id="dash_lng">
         <?php if (! $checkedIn): ?>
-            <button name="type" value="in" class="btn btn-light btn-lg btn-block">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h10"/><path d="M16 8l4 4-4 4"/><path d="M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6"/></svg>
-                Giriş Yap
-            </button>
+            <button name="type" value="in" class="btn btn-light btn-lg btn-block">Giriş Yap</button>
         <?php else: ?>
-            <button name="type" value="out" class="btn btn-danger btn-lg btn-block">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 12H4"/><path d="M8 8l-4 4 4 4"/><path d="M12 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/></svg>
-                Çıkış Yap
-            </button>
+            <button name="type" value="out" class="btn btn-danger btn-lg btn-block">Çıkış Yap</button>
         <?php endif; ?>
     </form>
     <?php else: ?>
-    <p style="opacity:.92;font-size:.95rem;margin:6px 0 0;position:relative;z-index:1">Giriş/çıkış yapmak için kapıdaki <strong>QR kodunu okutman</strong> gerekiyor.</p>
+    <p style="opacity:.92;font-size:.95rem;margin:6px 0 0;position:relative;z-index:1">Giriş/çıkış için kapıdaki <strong>QR kodunu</strong> telefonunla okut.</p>
     <?php endif; ?>
 </div>
 

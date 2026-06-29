@@ -18,10 +18,8 @@ class DynamicQr
         $now   = time();
         $model = new QrTokenModel();
 
-        // Yeni kod uretilince onceki kullanilmamis kodlar gecersiz olur ->
-        // sadece ekrandaki guncel QR ile giris yapilabilir.
-        $model->invalidateForLocation($locationId);
-
+        // Not: onceki tokenlar ARTIK aninda iptal edilmez; gecerlilik yalnizca TTL ile sinirli.
+        // Boylece ekranda gorunen / az once okutulan kod rotasyon yuzunden erken olmez.
         $model->insert([
             'location_id' => $locationId,
             'token'       => $token,
@@ -32,18 +30,24 @@ class DynamicQr
         return $token;
     }
 
-    /** Returns true and consumes the token if valid; false otherwise. */
-    public function consume(string $token, int $locationId): bool
+    /**
+     * Tarama aninda DOGRULAR ama tuketmez. Tuketim punch (POST) aninda yapilir;
+     * boylece link onizlemesi (iOS Safari vb.) GET ile tokeni yakmaz.
+     */
+    public function validate(string $token, int $locationId): ?array
     {
-        $model = new QrTokenModel();
-        $row   = $model->findValid($token, $locationId);
+        return (new QrTokenModel())->findValid($token, $locationId);
+    }
 
-        if ($row === null) {
-            return false;
-        }
+    /** Punch aninda tek-kullanimlik tuketim. true: bu cagri tuketti; false: zaten kullanilmis. */
+    public function markUsed(int $tokenId): bool
+    {
+        return (new QrTokenModel())->markUsedById($tokenId);
+    }
 
-        $model->update($row['id'], ['used_at' => date('Y-m-d H:i:s')]);
-
-        return true;
+    /** Teshis: dogrulama neden basarisiz oldu? missing|expired|used|ok */
+    public function failureReason(string $token, int $locationId): string
+    {
+        return (new QrTokenModel())->classifyFailure($token, $locationId);
     }
 }

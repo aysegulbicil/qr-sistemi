@@ -42,6 +42,7 @@ class Attendance extends BaseController
 
         $context    = session()->get('scan_context') ?? [];
         $locationId = $context['location_id'] ?? null;
+        $qrTokenId  = $context['qr_token_id'] ?? null;
 
         $userLat = $this->request->getPost('geo_lat');
         $userLng = $this->request->getPost('geo_lng');
@@ -70,9 +71,17 @@ class Attendance extends BaseController
             }
         }
 
+        // Dinamik QR tek-kullanimlik tuketim: gercek punch aninda (link onizlemesi degil).
+        if ($qrTokenId && ! (new \App\Services\DynamicQr())->markUsed((int) $qrTokenId)) {
+            session()->remove('scan_context');
+
+            return redirect()->to('/dashboard')->with('error', 'Bu QR kodu zaten kullanıldı. Kapıdaki güncel kodu tekrar okut.');
+        }
+
         $model->insert([
             'user_id'     => $userId,
             'location_id' => $locationId,
+            'qr_token_id' => $qrTokenId,
             'type'        => $type,
             'event_at'    => date('Y-m-d H:i:s'),
             'source'      => isset($context['location_id']) ? 'qr' : 'manual',
@@ -85,9 +94,12 @@ class Attendance extends BaseController
 
         session()->remove('scan_context');
 
-        $label = $type === 'in' ? 'Giriş' : 'Çıkış';
+        // Cikis (mesai cikisi) -> oturumu kapat, kullaniciyi login sayfasina don.
+        if ($type === 'out') {
+            return redirect()->to('/logout');
+        }
 
-        return redirect()->to('/dashboard')->with('message', $label . ' kaydedildi · ' . date('H:i'));
+        return redirect()->to('/dashboard')->with('message', 'Giriş kaydedildi · ' . date('H:i'));
     }
 
     private function logSuspicious(int $userId, ?int $locationId, string $type, string $reason, ?float $lat, ?float $lng, ?int $distance): void

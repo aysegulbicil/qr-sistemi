@@ -4,6 +4,7 @@
 $isEdit = $location !== null;
 $v      = static fn (string $k) => esc($isEdit ? ($location[$k] ?? '') : old($k));
 $mode   = qr_effective_mode($isEdit ? ($location['qr_mode'] ?? 'fixed') : (old('qr_mode') ?: 'fixed'));
+$regen  = $regen ?? ['limit' => 0, 'used' => 0];
 ?>
 <h1><?= $isEdit ? 'Lokasyonu düzenle' : 'Yeni lokasyon' ?></h1>
 <p class="back-link"><a href="<?= site_url('admin/locations') ?>">&larr; Lokasyonlar</a></p>
@@ -27,6 +28,9 @@ $mode   = qr_effective_mode($isEdit ? ($location['qr_mode'] ?? 'fixed') : (old('
             <?php endif; ?>
         </div>
 
+        <?php if ($isEdit && $mode === 'fixed' && $regen['limit'] > 0): ?>
+        <p class="hint" style="margin:-6px 0 16px">Sabit QR yenileme hakkı: <strong><?= max(0, $regen['limit'] - $regen['used']) ?></strong> / <?= $regen['limit'] ?> kaldı. Kodu değiştirmek bir yenileme sayılır.</p>
+        <?php endif; ?>
         <div class="form-section"><div class="sec-title">Konum doğrulama (GPS)</div></div>
         <div class="grid2">
             <div class="field"><label>Enlem (lat)</label><input type="text" id="geo_lat" name="geo_lat" value="<?= $v('geo_lat') ?>" placeholder="41.0082000"></div>

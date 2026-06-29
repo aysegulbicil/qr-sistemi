@@ -11,13 +11,19 @@ class Locations extends BaseController
     public function index()
     {
         return view('admin/locations/index', [
-            'locations' => (new LocationModel())->orderBy('name', 'ASC')->findAll(),
+            'locations'   => (new LocationModel())->orderBy('name', 'ASC')->findAll(),
+            'limit'       => max_locations(),
+            'activeCount' => $this->activeLocationCount(),
         ]);
     }
 
     public function new()
     {
-        return view('admin/locations/form', ['location' => null]);
+        if ($error = $this->locationLimitError()) {
+            return redirect()->to('/admin/locations')->with('error', $error);
+        }
+
+        return view('admin/locations/form', ['location' => null, 'regen' => $this->regenInfo()]);
     }
 
     public function edit(int $id)
@@ -27,11 +33,15 @@ class Locations extends BaseController
             return redirect()->to('/admin/locations')->with('error', 'Lokasyon bulunamadı.');
         }
 
-        return view('admin/locations/form', ['location' => $location]);
+        return view('admin/locations/form', ['location' => $location, 'regen' => $this->regenInfo()]);
     }
 
     public function create()
     {
+        if ($error = $this->locationLimitError()) {
+            return redirect()->to('/admin/locations')->with('error', $error);
+        }
+
         $code = slugify_code((string) $this->request->getPost('code'));
         if ($error = $this->validateLocation($code, null)) {
             return redirect()->back()->withInput()->with('error', $error);
@@ -52,11 +62,48 @@ class Locations extends BaseController
             return redirect()->back()->withInput()->with('error', $error);
         }
 
+        $existing          = (new LocationModel())->find($id);
         $data              = $this->payload($code);
         $data['is_active'] = $this->request->getPost('is_active') ? 1 : 0;
+
+        // Lisans lokasyon limiti: PASIF bir lokasyon yeniden aktive ediliyorsa slot tuketir.
+        if ($data['is_active'] === 1 && (int) ($existing['is_active'] ?? 0) === 0
+            && ($error = $this->locationLimitError())) {
+            return redirect()->back()->withInput()->with('error', $error);
+        }
+
+        // Sabit QR yenileme: sabit kalan bir lokasyonun KODU degisiyorsa kurum-bazli limite tabidir.
+        $isFixedRegen = $existing
+            && $data['qr_mode'] === 'fixed'
+            && ($existing['qr_mode'] ?? 'fixed') === 'fixed'
+            && $code !== $existing['code'];
+
+        $settings = new \App\Models\SettingModel();
+        $limit    = fixed_qr_regen_limit();
+        $used     = (int) $settings->getValue('fixed_qr_regen_used', '0');
+
+        if ($isFixedRegen && $limit > 0 && $used >= $limit) {
+            return redirect()->back()->withInput()->with('error',
+                'Sabit QR yenileme limiti doldu (' . $used . '/' . $limit . '). Yeni kod tanımlanamaz; mevcut kod korunuyor.');
+        }
+
+        // Dinamik moda gecis: kapi ekrani (kiosk) imzasi yoksa uret.
+        if ($data['qr_mode'] === 'dynamic' && empty($existing['token_secret'])) {
+            $data['token_secret'] = bin2hex(random_bytes(16));
+        }
+
         (new LocationModel())->update($id, $data);
 
-        return redirect()->to('/admin/locations')->with('message', 'Lokasyon güncellendi. Kod: ' . $code);
+        if ($isFixedRegen) {
+            $settings->setValue('fixed_qr_regen_used', (string) ($used + 1));
+        }
+
+        $msg = 'Lokasyon güncellendi. Kod: ' . $code;
+        if ($isFixedRegen && $limit > 0) {
+            $msg .= ' · Sabit QR yenileme: ' . ($used + 1) . '/' . $limit;
+        }
+
+        return redirect()->to('/admin/locations')->with('message', $msg);
     }
 
     public function delete(int $id)
@@ -128,5 +175,32 @@ class Locations extends BaseController
             'geo_radius_m' => is_numeric($rad) ? (int) $rad : null,
             'enforce_geo'  => $this->request->getPost('enforce_geo') ? 1 : 0,
         ];
+    }
+
+    private function regenInfo(): array
+    {
+        return [
+            'limit' => fixed_qr_regen_limit(),
+            'used'  => (int) (new \App\Models\SettingModel())->getValue('fixed_qr_regen_used', '0'),
+        ];
+    }
+
+    private function activeLocationCount(): int
+    {
+        return (new LocationModel())->where('is_active', 1)->countAllResults();
+    }
+
+    /** Lisans aktif-lokasyon limiti doluysa hata mesaji, degilse null. */
+    private function locationLimitError(): ?string
+    {
+        $limit = max_locations();
+        if ($limit <= 0) {
+            return null;
+        }
+        if ($this->activeLocationCount() >= $limit) {
+            return 'Lisans lokasyon limiti doldu (' . $this->activeLocationCount() . '/' . $limit . '). Yeni lokasyon için mevcut birini pasif yap/sil ya da paketi yükselt.';
+        }
+
+        return null;
     }
 }

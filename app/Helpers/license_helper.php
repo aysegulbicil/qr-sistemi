@@ -26,3 +26,19 @@ if (! function_exists('qr_effective_mode')) {
         return ($stored === 'dynamic' && qr_dynamic_enabled()) ? 'dynamic' : 'fixed';
     }
 }
+
+if (! function_exists('fixed_qr_regen_limit')) {
+    /** Kurum basina toplam sabit-QR yenileme ust siniri. 0 = sinirsiz (kapali). */
+    function fixed_qr_regen_limit(): int
+    {
+        return (int) env('feature.fixedQrRegenLimit', 0);
+    }
+}
+
+if (! function_exists('max_locations')) {
+    /** Bu kurulum (kurum) icin izinli AKTIF lokasyon (QR) sayisi. 0 = sinirsiz. Lisans/.env ile belirlenir, admin paneline kapalidir. */
+    function max_locations(): int
+    {
+        return (int) env('feature.maxLocations', 0);
+    }
+}

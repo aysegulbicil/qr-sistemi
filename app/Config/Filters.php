@@ -27,6 +27,7 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'auth'          => \App\Filters\AuthFilter::class,
         'admin'         => \App\Filters\AdminFilter::class,
+        'scan'          => \App\Filters\ScanFilter::class,
     ];
 
     public array $required = [
@@ -41,5 +42,8 @@ class Filters extends BaseFilters
 
     public array $methods = [];
 
-    public array $filters = [];
+    public array $filters = [
+        // Personel panel sayfalari: admin olmayan, taramamis kullaniciyi /punch'a yollar.
+        'scan' => ['before' => ['dashboard', 'history', 'requests', 'requests/*', 'notifications', 'notifications/*']],
+    ];
 }

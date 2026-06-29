@@ -1,9 +1,19 @@
 <?= $this->extend('layout/app') ?>
 <?= $this->section('content') ?>
+<?php $limit = $limit ?? 0; $activeCount = $activeCount ?? 0; $atLimit = $limit > 0 && $activeCount >= $limit; ?>
 <div class="card-head">
-    <h1>Lokasyonlar <span class="count-pill"><?= count($locations) ?></span></h1>
-    <a class="btn btn-primary" href="<?= site_url('admin/locations/new') ?>">+ Yeni lokasyon</a>
+    <h1>Lokasyonlar <span class="count-pill"><?= count($locations) ?></span>
+        <?php if ($limit > 0): ?><span class="muted-sm" style="font-weight:500;margin-left:8px">Aktif: <?= $activeCount ?> / <?= $limit ?></span><?php endif; ?>
+    </h1>
+    <?php if ($atLimit): ?>
+        <button class="btn btn-primary" type="button" disabled title="Lisans lokasyon limiti doldu" style="opacity:.5;cursor:not-allowed">+ Yeni lokasyon</button>
+    <?php else: ?>
+        <a class="btn btn-primary" href="<?= site_url('admin/locations/new') ?>">+ Yeni lokasyon</a>
+    <?php endif; ?>
 </div>
+<?php if ($atLimit): ?>
+<p class="muted-sm" style="margin:-6px 0 14px">Lisans lokasyon limitin dolu (<?= $activeCount ?>/<?= $limit ?>). Yeni eklemek için mevcut birini pasif yap/sil.</p>
+<?php endif; ?>
 <div class="card">
     <?php if (empty($locations)): ?>
         <?= view('partials/empty', ['title' => 'Henüz lokasyon yok', 'message' => 'İlk lokasyonunu ekle.', 'actionUrl' => site_url('admin/locations/new'), 'actionLabel' => '+ Yeni lokasyon']) ?>

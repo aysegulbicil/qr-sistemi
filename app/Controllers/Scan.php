@@ -17,35 +17,47 @@ class Scan extends BaseController
         $location = (new LocationModel())->findByCode(trim($code));
 
         if ($location === null) {
-            return view('scan_error', [
-                'message' => 'Bu QR adresi sistemde kayıtlı değil (okunan kod: "' . $code . '"). Yöneticiyle kontrol et.',
-            ]);
+            return $this->fail('Bu QR adresi sistemde kayıtlı değil (okunan kod: "' . $code . '"). Yöneticiyle kontrol et.');
         }
         if (! $location['is_active']) {
-            return view('scan_error', [
-                'message' => '"' . $location['name'] . '" lokasyonu şu an pasif. Yöneticinin aktif etmesi gerekiyor.',
-            ]);
+            return $this->fail('"' . $location['name'] . '" lokasyonu şu an pasif. Yöneticinin aktif etmesi gerekiyor.');
         }
 
-        // Dynamic QR: a valid, unexpired, single-use token must be present.
+        // Dinamik QR: gecerli, suresi dolmamis token GET ile DOGRULANIR ama tuketilmez.
+        // Tuketim punch (POST) aninda yapilir; boylece link onizlemesi tokeni yakmaz.
+        $tokenId = null;
         if (qr_effective_mode($location['qr_mode']) === 'dynamic') {
-            $token = (string) $this->request->getGet('t');
-            if ($token === '' || ! (new DynamicQr())->consume($token, (int) $location['id'])) {
-                return view('scan_error', [
-                    'message' => 'Bu QR kodunun süresi doldu. Ekrandaki güncel kodu tekrar okut.',
-                ]);
+            $token = trim((string) $this->request->getGet('t'));
+            $row   = $token === '' ? null : (new DynamicQr())->validate($token, (int) $location['id']);
+            if ($row === null) {
+                $reason = $token === '' ? 'missing' : (new DynamicQr())->failureReason($token, (int) $location['id']);
+                log_message('warning', 'QR tarama reddedildi: loc=' . $location['code'] . ' reason=' . $reason);
+
+                return $this->fail('Bu QR kodunun süresi doldu. Ekrandaki güncel kodu tekrar okut.');
             }
+            $tokenId = (int) $row['id'];
         }
 
-        // Remember the validated scan so the dashboard can offer Check in / out.
+        // Dogrulanan taramayi hatirla; punch ekrani giris/cikis sunar, token POST'ta tuketilir.
         session()->set('scan_context', [
             'location_id'   => (int) $location['id'],
             'location_name' => $location['name'],
             'qr_mode'       => qr_effective_mode($location['qr_mode']),
+            'qr_token_id'   => $tokenId,
             'at'            => date('Y-m-d H:i:s'),
         ]);
+        // Personel icin: bu login oturumu QR ile acildi (panel erisimi); cikisa kadar gecerli.
+        session()->set('scan_unlocked', true);
 
         // The auth filter sends guests to login first, then back here.
         return redirect()->to('/dashboard');
+    }
+
+    /** Hata ekrani: bayat tarama baglamini temizle ki uyari sonrasi punch mumkun olmasin. */
+    private function fail(string $message)
+    {
+        session()->remove('scan_context');
+
+        return view('scan_error', ['message' => $message]);
     }
 }

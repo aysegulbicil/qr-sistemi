@@ -6,6 +6,8 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->get('/', 'Auth::login');
 $routes->get('q/(:segment)', 'Scan::location/$1');
+$routes->get('display/(:num)/(:segment)/token', 'Display::token/$1/$2');
+$routes->get('display/(:num)/(:segment)', 'Display::screen/$1/$2');
 
 $routes->get('login', 'Auth::login');
 $routes->post('login', 'Auth::attemptLogin');
@@ -13,6 +15,7 @@ $routes->get('logout', 'Auth::logout');
 
 $routes->group('', ['filter' => 'auth'], static function (RouteCollection $routes) {
     $routes->get('dashboard', 'Dashboard::index');
+    $routes->get('punch', 'Punch::index');
     $routes->get('history', 'History::index');
     $routes->post('attendance/punch', 'Attendance::punch');
     $routes->get('requests', 'Requests::index');

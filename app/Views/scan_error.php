@@ -1,4 +1,4 @@
-<?= $this->extend('layout/app') ?>
+<?= $this->extend('layout/bare') ?>
 <?= $this->section('content') ?>
 <?php $loggedIn = (bool) session()->get('user_id'); ?>
 <div class="card pad-lg center">
