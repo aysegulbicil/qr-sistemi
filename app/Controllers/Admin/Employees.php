@@ -44,16 +44,21 @@ class Employees extends BaseController
         if ($action === 'export') {
             $rows = $users->forExport($ids);
             $fh   = fopen('php://temp', 'r+');
+            // CSV formul enjeksiyonu onlemi: =,+,-,@ ile baslayan hucreleri notrle.
+            $csvSafe = static function ($v): string {
+                $v = (string) $v;
+                return preg_match('/^[=\-+@\t\r]/', $v) === 1 ? "'" . $v : $v;
+            };
             fputcsv($fh, ['Ad Soyad', 'Personel kodu', 'Kullanıcı adı', 'Departman', 'Pozisyon', 'Durum']);
             foreach ($rows as $r) {
-                fputcsv($fh, [
+                fputcsv($fh, array_map($csvSafe, [
                     $r['full_name'] ?? '',
                     $r['employee_code'] ?? '',
                     $r['username'] ?? '',
                     $r['department_name'] ?? '',
                     $r['position_name'] ?? '',
                     $labels[$r['employment_status'] ?? ''] ?? ($r['employment_status'] ?? ''),
-                ]);
+                ]));
             }
             rewind($fh);
             $csv = stream_get_contents($fh);
@@ -174,7 +179,7 @@ class Employees extends BaseController
         return [
             'full_name'     => 'required|max_length[150]',
             'username'      => "required|max_length[100]|{$unique}",
-            'password'      => $id ? 'permit_empty|min_length[4]' : 'required|min_length[4]',
+            'password'      => $id ? 'permit_empty|min_length[8]' : 'required|min_length[8]',
             'salary_amount' => 'permit_empty|decimal',
             'contact_email' => 'permit_empty|valid_email',
         ];

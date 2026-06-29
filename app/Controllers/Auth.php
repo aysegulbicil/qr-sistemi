@@ -17,6 +17,12 @@ class Auth extends BaseController
 
     public function attemptLogin()
     {
+        // Brute-force korumasi: IP basina dakikada en fazla 5 deneme.
+        $throttler = service('throttler');
+        if ($throttler->check(md5('login-' . $this->request->getIPAddress()), 5, MINUTE) === false) {
+            return redirect()->back()->withInput()->with('error', 'Cok fazla giris denemesi. Lutfen bir dakika sonra tekrar dene.');
+        }
+
         $username = (string) $this->request->getPost('username');
         $password = (string) $this->request->getPost('password');
 
@@ -25,6 +31,9 @@ class Auth extends BaseController
         if ($user === null || ! $user['is_active'] || ! password_verify($password, $user['password_hash'])) {
             return redirect()->back()->withInput()->with('error', 'Kullanıcı adı veya parola hatalı.');
         }
+
+        // Session fixation korumasi: giriste oturum kimligini yenile.
+        session()->regenerate(true);
 
         session()->set([
             'user_id'   => (int) $user['id'],
