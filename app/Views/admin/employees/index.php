@@ -5,7 +5,7 @@ $statusOpts = ['' => 'Tüm durumlar', 'Aktif' => 'Aktif', 'Pasif' => 'Pasif', 'A
 ?>
 <div class="card-head">
     <h1>Personeller <span class="count-pill"><?= count($rows) ?></span></h1>
-    <a class="btn btn-primary" href="<?= site_url('admin/employees/new') ?>">+ Yeni personel</a>
+    <a class="btn btn-primary" href="<?= site_url('admin/employees/new') ?>" data-modal data-modal-title="Yeni personel" data-modal-size="lg">+ Yeni personel</a>
 </div>
 
 <form method="post" action="<?= site_url('admin/employees/bulk') ?>" id="empBulk">
@@ -16,7 +16,7 @@ $statusOpts = ['' => 'Tüm durumlar', 'Aktif' => 'Aktif', 'Pasif' => 'Pasif', 'A
                 'title'       => 'Henüz personel yok',
                 'message'     => 'İlk personelini ekleyerek başla.',
                 'actionUrl'   => site_url('admin/employees/new'),
-                'actionLabel' => '+ Yeni personel',
+                'actionLabel' => '+ Yeni personel', 'actionModal' => true, 'actionTitle' => 'Yeni personel', 'actionSize' => 'lg',
             ]) ?>
         <?php else: ?>
         <!-- Sütun bazlı filtreler (DataTable'a bağlanır) -->
@@ -59,7 +59,7 @@ $statusOpts = ['' => 'Tüm durumlar', 'Aktif' => 'Aktif', 'Pasif' => 'Pasif', 'A
                     <td><span class="badge <?= $scls ?>"><?= $slbl ?></span></td>
                     <td class="row-actions">
                         <a href="<?= site_url('admin/employees/' . $r['id']) ?>">Profil</a>
-                        <a href="<?= site_url('admin/employees/' . $r['id'] . '/edit') ?>">Düzenle</a>
+                        <a class="btn btn-warning-soft btn-sm" href="<?= site_url('admin/employees/' . $r['id'] . '/edit') ?>" data-modal data-modal-title="Personeli düzenle" data-modal-size="lg">Düzenle</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

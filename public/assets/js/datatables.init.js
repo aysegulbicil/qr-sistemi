@@ -81,9 +81,9 @@
         return {
             language:   LANG,
             lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Tümü']],
-            pageLength: 25,
+            pageLength: 10,
             pagingType: 'simple_numbers',
-            responsive: !!$.fn.dataTable.Responsive,
+            responsive: false,
             autoWidth:  false,
             order:      [],
             columnDefs: defs

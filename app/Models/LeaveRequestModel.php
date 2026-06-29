@@ -33,6 +33,19 @@ class LeaveRequestModel extends Model
             ->get()->getResultArray();
     }
 
+    /** Tüm izin talepleri (bekleyen + onaylı + reddedilmiş); bekleyenler üstte, sonra en yeni karar/talep. */
+    public function allWithUser(): array
+    {
+        return $this->db->table('leave_requests lr')
+            ->select('lr.*, t.name AS type_name, u.full_name')
+            ->join('leave_types t', 't.id = lr.leave_type_id', 'left')
+            ->join('users u', 'u.id = lr.user_id', 'left')
+            ->orderBy("CASE WHEN lr.status = 'pending' THEN 0 ELSE 1 END ASC", '', false)
+            ->orderBy('lr.decided_at', 'DESC')
+            ->orderBy('lr.created_at', 'DESC')
+            ->get()->getResultArray();
+    }
+
     /** Dates (Y-m-d) within an approved leave for a user, for payroll exclusion. */
     public function approvedDates(int $userId, string $start, string $end): array
     {

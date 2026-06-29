@@ -19,7 +19,7 @@ $meta = ($pos ?: 'Pozisyon atanmamış') . ($dept ? ' · ' . $dept : '');
                 <span class="badge <?= ($emp['role'] ?? '') === 'admin' ? 'badge-blue' : 'badge-grey' ?>"><?= ($emp['role'] ?? '') === 'admin' ? 'Yönetici' : 'Personel' ?></span>
             </div>
         </div>
-        <div class="pactions"><a class="btn btn-outline" href="<?= site_url('admin/employees/' . $emp['id'] . '/edit') ?>">Düzenle</a></div>
+        <div class="pactions"><a class="btn btn-warning-soft" href="<?= site_url('admin/employees/' . $emp['id'] . '/edit') ?>" data-modal data-modal-title="Personeli düzenle" data-modal-size="lg">Düzenle</a></div>
     </div>
 </div>
 

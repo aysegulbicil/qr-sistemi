@@ -151,6 +151,7 @@ code{background:var(--neu-bg);padding:2px 7px;border-radius:6px;font-size:.85em;
 .badge-amber{background:var(--late-bg);color:var(--late-ink);}
 .badge-grey{background:var(--neu-bg);color:var(--neu-ink);}
 .badge-blue{background:var(--ot-bg);color:var(--ot-ink);}
+.badge-red{background:var(--dng-bg);color:var(--dng-ink);}
 
 .alert{padding:13px 16px;border-radius:var(--radius-sm);margin-bottom:18px;font-weight:600;font-size:.92rem;}
 .alert-success{background:var(--in-bg);color:var(--in-ink);}
@@ -189,6 +190,8 @@ table.data td .mini-avatar{width:30px;height:30px;font-size:.72rem;}
 .btn-sm{padding:8px 13px;font-size:.84rem;border-radius:10px;}
 .btn-danger-soft{background:var(--dng-bg);color:var(--dng-ink);}
 .btn-danger-soft:hover{filter:brightness(.97);}
+.btn-warning-soft{background:#f4e9bb;color:#854d0e;}
+.btn-warning-soft:hover{filter:brightness(.97);}
 .empty-state{text-align:center;padding:42px 20px;color:var(--muted);}
 .empty-state .ico{width:56px;height:56px;border-radius:16px;background:var(--neu-bg);color:var(--faint);display:inline-grid;place-items:center;margin-bottom:12px;}
 .empty-state .ico svg{width:27px;height:27px;}

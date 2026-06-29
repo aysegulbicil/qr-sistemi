@@ -14,7 +14,7 @@ class Shifts extends BaseController
 
     public function new()
     {
-        return view('admin/shifts/form', ['shift' => null]);
+        return view($this->wantsJson() ? 'admin/shifts/_form' : 'admin/shifts/form', ['shift' => null]);
     }
 
     public function edit(int $id)
@@ -24,27 +24,35 @@ class Shifts extends BaseController
             return redirect()->to('/admin/shifts')->with('error', 'Vardiya bulunamadı.');
         }
 
-        return view('admin/shifts/form', ['shift' => $shift]);
+        return view($this->wantsJson() ? 'admin/shifts/_form' : 'admin/shifts/form', ['shift' => $shift]);
     }
 
     public function create()
     {
         if (! $this->validate($this->rules())) {
-            return redirect()->back()->withInput()->with('error', implode(' ', $this->validator->getErrors()));
+            $msg = implode(' ', $this->validator->getErrors());
+
+            return $this->wantsJson() ? $this->jsonError($msg) : redirect()->back()->withInput()->with('error', $msg);
         }
         (new ShiftModel())->insert($this->payload());
 
-        return redirect()->to('/admin/shifts')->with('message', 'Vardiya eklendi.');
+        return $this->wantsJson()
+            ? $this->jsonOk(site_url('admin/shifts'), 'Vardiya eklendi.')
+            : redirect()->to('/admin/shifts')->with('message', 'Vardiya eklendi.');
     }
 
     public function update(int $id)
     {
         if (! $this->validate($this->rules())) {
-            return redirect()->back()->withInput()->with('error', implode(' ', $this->validator->getErrors()));
+            $msg = implode(' ', $this->validator->getErrors());
+
+            return $this->wantsJson() ? $this->jsonError($msg) : redirect()->back()->withInput()->with('error', $msg);
         }
         (new ShiftModel())->update($id, $this->payload());
 
-        return redirect()->to('/admin/shifts')->with('message', 'Vardiya güncellendi.');
+        return $this->wantsJson()
+            ? $this->jsonOk(site_url('admin/shifts'), 'Vardiya güncellendi.')
+            : redirect()->to('/admin/shifts')->with('message', 'Vardiya güncellendi.');
     }
 
     public function delete(int $id)

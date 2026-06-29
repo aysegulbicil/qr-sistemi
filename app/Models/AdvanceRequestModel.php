@@ -26,4 +26,16 @@ class AdvanceRequestModel extends Model
             ->orderBy('ar.created_at', 'ASC')
             ->get()->getResultArray();
     }
+
+    /** Tüm avans talepleri (bekleyen + onaylı + reddedilmiş); bekleyenler üstte, sonra en yeni karar/talep. */
+    public function allWithUser(): array
+    {
+        return $this->db->table('advance_requests ar')
+            ->select('ar.*, u.full_name')
+            ->join('users u', 'u.id = ar.user_id', 'left')
+            ->orderBy("CASE WHEN ar.status = 'pending' THEN 0 ELSE 1 END ASC", '', false)
+            ->orderBy('ar.decided_at', 'DESC')
+            ->orderBy('ar.created_at', 'DESC')
+            ->get()->getResultArray();
+    }
 }

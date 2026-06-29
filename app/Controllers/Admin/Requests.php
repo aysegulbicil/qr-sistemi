@@ -13,8 +13,8 @@ class Requests extends BaseController
     public function index()
     {
         return view('admin/requests/index', [
-            'leaves'   => (new LeaveRequestModel())->pending(),
-            'advances' => (new AdvanceRequestModel())->pending(),
+            'leaves'   => (new LeaveRequestModel())->allWithUser(),
+            'advances' => (new AdvanceRequestModel())->allWithUser(),
         ]);
     }
 

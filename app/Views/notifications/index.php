@@ -9,7 +9,7 @@
         <?php foreach ($list as $n): ?>
             <div class="mv" style="<?= $n['read_at'] ? '' : 'background:var(--brand-tint);margin:0 -12px;padding:10px 12px;border-radius:9px' ?>">
                 <span class="mdot <?= $n['read_at'] ? 'out' : 'in' ?>"></span>
-                <span><?= esc($n['message']) ?><?php if ($n['url']): ?> · <a href="<?= esc($n['url']) ?>">Git</a><?php endif; ?></span>
+                <span><?= esc($n['message']) ?></span><?php if ($n['url']): ?><a class="btn btn-outline btn-sm" href="<?= esc($n['url']) ?>">Git</a><?php endif; ?>
                 <span class="mt"><?= esc(date('d.m H:i', strtotime($n['created_at']))) ?></span>
             </div>
         <?php endforeach; ?>

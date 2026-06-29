@@ -17,7 +17,7 @@ class Positions extends BaseController
 
     public function new()
     {
-        return view('admin/positions/form', [
+        return view($this->wantsJson() ? 'admin/positions/_form' : 'admin/positions/form', [
             'position'    => null,
             'departments' => (new DepartmentModel())->ordered(),
         ]);
@@ -26,7 +26,9 @@ class Positions extends BaseController
     public function create()
     {
         if (! $this->validate(['name' => 'required|max_length[120]'])) {
-            return redirect()->back()->withInput()->with('error', 'Pozisyon adı gerekli.');
+            $msg = 'Pozisyon adı gerekli.';
+
+            return $this->wantsJson() ? $this->jsonError($msg) : redirect()->back()->withInput()->with('error', $msg);
         }
 
         (new PositionModel())->insert([
@@ -35,7 +37,9 @@ class Positions extends BaseController
             'description'   => $this->request->getPost('description') ?: null,
         ]);
 
-        return redirect()->to('/admin/positions')->with('message', 'Pozisyon eklendi.');
+        return $this->wantsJson()
+            ? $this->jsonOk(site_url('admin/positions'), 'Pozisyon eklendi.')
+            : redirect()->to('/admin/positions')->with('message', 'Pozisyon eklendi.');
     }
 
     public function edit(int $id)
@@ -45,7 +49,7 @@ class Positions extends BaseController
             return redirect()->to('/admin/positions')->with('error', 'Pozisyon bulunamadı.');
         }
 
-        return view('admin/positions/form', [
+        return view($this->wantsJson() ? 'admin/positions/_form' : 'admin/positions/form', [
             'position'    => $position,
             'departments' => (new DepartmentModel())->ordered(),
         ]);
@@ -54,7 +58,9 @@ class Positions extends BaseController
     public function update(int $id)
     {
         if (! $this->validate(['name' => 'required|max_length[120]'])) {
-            return redirect()->back()->withInput()->with('error', 'Pozisyon adı gerekli.');
+            $msg = 'Pozisyon adı gerekli.';
+
+            return $this->wantsJson() ? $this->jsonError($msg) : redirect()->back()->withInput()->with('error', $msg);
         }
 
         (new PositionModel())->update($id, [
@@ -63,7 +69,9 @@ class Positions extends BaseController
             'description'   => $this->request->getPost('description') ?: null,
         ]);
 
-        return redirect()->to('/admin/positions')->with('message', 'Pozisyon güncellendi.');
+        return $this->wantsJson()
+            ? $this->jsonOk(site_url('admin/positions'), 'Pozisyon güncellendi.')
+            : redirect()->to('/admin/positions')->with('message', 'Pozisyon güncellendi.');
     }
 
     public function delete(int $id)

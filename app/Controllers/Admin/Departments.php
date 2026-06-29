@@ -16,13 +16,15 @@ class Departments extends BaseController
 
     public function new()
     {
-        return view('admin/departments/form', ['department' => null]);
+        return view($this->wantsJson() ? 'admin/departments/_form' : 'admin/departments/form', ['department' => null]);
     }
 
     public function create()
     {
         if (! $this->validate(['name' => 'required|max_length[120]'])) {
-            return redirect()->back()->withInput()->with('error', 'Departman adı gerekli.');
+            $msg = 'Departman adı gerekli.';
+
+            return $this->wantsJson() ? $this->jsonError($msg) : redirect()->back()->withInput()->with('error', $msg);
         }
 
         (new DepartmentModel())->insert([
@@ -30,7 +32,9 @@ class Departments extends BaseController
             'description' => $this->request->getPost('description') ?: null,
         ]);
 
-        return redirect()->to('/admin/departments')->with('message', 'Departman eklendi.');
+        return $this->wantsJson()
+            ? $this->jsonOk(site_url('admin/departments'), 'Departman eklendi.')
+            : redirect()->to('/admin/departments')->with('message', 'Departman eklendi.');
     }
 
     public function edit(int $id)
@@ -40,13 +44,15 @@ class Departments extends BaseController
             return redirect()->to('/admin/departments')->with('error', 'Departman bulunamadı.');
         }
 
-        return view('admin/departments/form', ['department' => $department]);
+        return view($this->wantsJson() ? 'admin/departments/_form' : 'admin/departments/form', ['department' => $department]);
     }
 
     public function update(int $id)
     {
         if (! $this->validate(['name' => 'required|max_length[120]'])) {
-            return redirect()->back()->withInput()->with('error', 'Departman adı gerekli.');
+            $msg = 'Departman adı gerekli.';
+
+            return $this->wantsJson() ? $this->jsonError($msg) : redirect()->back()->withInput()->with('error', $msg);
         }
 
         (new DepartmentModel())->update($id, [
@@ -54,7 +60,9 @@ class Departments extends BaseController
             'description' => $this->request->getPost('description') ?: null,
         ]);
 
-        return redirect()->to('/admin/departments')->with('message', 'Departman güncellendi.');
+        return $this->wantsJson()
+            ? $this->jsonOk(site_url('admin/departments'), 'Departman güncellendi.')
+            : redirect()->to('/admin/departments')->with('message', 'Departman güncellendi.');
     }
 
     public function delete(int $id)

@@ -15,7 +15,7 @@
 
 <div class="card">
     <?php if (empty($rows)): ?>
-        <?= view('partials/empty', ['title' => 'Personel yok', 'message' => 'Puantaj için önce personel ekle.', 'actionUrl' => site_url('admin/employees/new'), 'actionLabel' => '+ Yeni personel']) ?>
+        <?= view('partials/empty', ['title' => 'Personel yok', 'message' => 'Puantaj için önce personel ekle.', 'actionUrl' => site_url('admin/employees/new'), 'actionLabel' => '+ Yeni personel', 'actionModal' => true, 'actionTitle' => 'Yeni personel', 'actionSize' => 'lg']) ?>
     <?php else: ?>
     <div class="table-scroll">
         <table class="data">
@@ -34,7 +34,7 @@
                     <td class="num"><?= $p['overtime_minutes'] ? esc(minutes_to_hm((int) $p['overtime_minutes'])) : '—' ?></td>
                     <td class="num"><?= $p['missing_days'] ? '<span class="badge badge-amber">' . (int) $p['missing_days'] . ' gün</span>' : '—' ?></td>
                     <td class="num"><strong><?= esc(money($p['net'], $p['currency'])) ?></strong></td>
-                    <td class="text-right"><a href="<?= site_url('admin/payroll/' . $u['id']) . '?month=' . esc($ym) ?>">Detay</a></td>
+                    <td class="text-right"><a class="btn btn-outline btn-sm" href="<?= site_url('admin/payroll/' . $u['id']) . '?month=' . esc($ym) ?>">Detay</a></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

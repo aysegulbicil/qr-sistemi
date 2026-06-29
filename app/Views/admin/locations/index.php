@@ -8,7 +8,7 @@
     <?php if ($atLimit): ?>
         <button class="btn btn-primary" type="button" disabled title="Lisans lokasyon limiti doldu" style="opacity:.5;cursor:not-allowed">+ Yeni lokasyon</button>
     <?php else: ?>
-        <a class="btn btn-primary" href="<?= site_url('admin/locations/new') ?>">+ Yeni lokasyon</a>
+        <a class="btn btn-primary" href="<?= site_url('admin/locations/new') ?>" data-modal data-modal-title="Yeni lokasyon">+ Yeni lokasyon</a>
     <?php endif; ?>
 </div>
 <?php if ($atLimit): ?>
@@ -16,7 +16,7 @@
 <?php endif; ?>
 <div class="card">
     <?php if (empty($locations)): ?>
-        <?= view('partials/empty', ['title' => 'Henüz lokasyon yok', 'message' => 'İlk lokasyonunu ekle.', 'actionUrl' => site_url('admin/locations/new'), 'actionLabel' => '+ Yeni lokasyon']) ?>
+        <?= view('partials/empty', ['title' => 'Henüz lokasyon yok', 'message' => 'İlk lokasyonunu ekle.', 'actionUrl' => site_url('admin/locations/new'), 'actionLabel' => '+ Yeni lokasyon', 'actionModal' => true, 'actionTitle' => 'Yeni lokasyon']) ?>
     <?php else: ?>
     <div class="table-scroll">
         <table class="data">
@@ -31,7 +31,7 @@
                     <td><span class="badge <?= $l['is_active'] ? 'badge-green' : 'badge-grey' ?>"><?= $l['is_active'] ? 'Aktif' : 'Pasif' ?></span></td>
                     <td class="row-actions">
                         <a href="<?= site_url('admin/locations/' . $l['id'] . '/qr') ?>">QR</a>
-                        <a href="<?= site_url('admin/locations/' . $l['id'] . '/edit') ?>">Düzenle</a>
+                        <a class="btn btn-warning-soft btn-sm" href="<?= site_url('admin/locations/' . $l['id'] . '/edit') ?>" data-modal data-modal-title="Lokasyonu düzenle">Düzenle</a>
                         <form method="post" action="<?= site_url('admin/locations/' . $l['id'] . '/delete') ?>" onsubmit="return confirm('Bu lokasyon silinsin mi?')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
                     </td>
                 </tr>

@@ -23,7 +23,7 @@ class Locations extends BaseController
             return redirect()->to('/admin/locations')->with('error', $error);
         }
 
-        return view('admin/locations/form', ['location' => null, 'regen' => $this->regenInfo()]);
+        return view($this->wantsJson() ? 'admin/locations/_form' : 'admin/locations/form', ['location' => null, 'regen' => $this->regenInfo()]);
     }
 
     public function edit(int $id)
@@ -33,18 +33,18 @@ class Locations extends BaseController
             return redirect()->to('/admin/locations')->with('error', 'Lokasyon bulunamadı.');
         }
 
-        return view('admin/locations/form', ['location' => $location, 'regen' => $this->regenInfo()]);
+        return view($this->wantsJson() ? 'admin/locations/_form' : 'admin/locations/form', ['location' => $location, 'regen' => $this->regenInfo()]);
     }
 
     public function create()
     {
         if ($error = $this->locationLimitError()) {
-            return redirect()->to('/admin/locations')->with('error', $error);
+            return $this->wantsJson() ? $this->jsonError($error) : redirect()->to('/admin/locations')->with('error', $error);
         }
 
         $code = slugify_code((string) $this->request->getPost('code'));
         if ($error = $this->validateLocation($code, null)) {
-            return redirect()->back()->withInput()->with('error', $error);
+            return $this->wantsJson() ? $this->jsonError($error) : redirect()->back()->withInput()->with('error', $error);
         }
 
         $data                 = $this->payload($code);
@@ -52,14 +52,16 @@ class Locations extends BaseController
         $data['is_active']    = 1;
         (new LocationModel())->insert($data);
 
-        return redirect()->to('/admin/locations')->with('message', 'Lokasyon eklendi. Kod: ' . $code);
+        $msg = 'Lokasyon eklendi. Kod: ' . $code;
+
+        return $this->wantsJson() ? $this->jsonOk(site_url('admin/locations'), $msg) : redirect()->to('/admin/locations')->with('message', $msg);
     }
 
     public function update(int $id)
     {
         $code = slugify_code((string) $this->request->getPost('code'));
         if ($error = $this->validateLocation($code, $id)) {
-            return redirect()->back()->withInput()->with('error', $error);
+            return $this->wantsJson() ? $this->jsonError($error) : redirect()->back()->withInput()->with('error', $error);
         }
 
         $existing          = (new LocationModel())->find($id);
@@ -69,7 +71,7 @@ class Locations extends BaseController
         // Lisans lokasyon limiti: PASIF bir lokasyon yeniden aktive ediliyorsa slot tuketir.
         if ($data['is_active'] === 1 && (int) ($existing['is_active'] ?? 0) === 0
             && ($error = $this->locationLimitError())) {
-            return redirect()->back()->withInput()->with('error', $error);
+            return $this->wantsJson() ? $this->jsonError($error) : redirect()->back()->withInput()->with('error', $error);
         }
 
         // Sabit QR yenileme: sabit kalan bir lokasyonun KODU degisiyorsa kurum-bazli limite tabidir.
@@ -83,8 +85,9 @@ class Locations extends BaseController
         $used     = (int) $settings->getValue('fixed_qr_regen_used', '0');
 
         if ($isFixedRegen && $limit > 0 && $used >= $limit) {
-            return redirect()->back()->withInput()->with('error',
-                'Sabit QR yenileme limiti doldu (' . $used . '/' . $limit . '). Yeni kod tanımlanamaz; mevcut kod korunuyor.');
+            $error = 'Sabit QR yenileme limiti doldu (' . $used . '/' . $limit . '). Yeni kod tanımlanamaz; mevcut kod korunuyor.';
+
+            return $this->wantsJson() ? $this->jsonError($error) : redirect()->back()->withInput()->with('error', $error);
         }
 
         // Dinamik moda gecis: kapi ekrani (kiosk) imzasi yoksa uret.
@@ -103,7 +106,7 @@ class Locations extends BaseController
             $msg .= ' · Sabit QR yenileme: ' . ($used + 1) . '/' . $limit;
         }
 
-        return redirect()->to('/admin/locations')->with('message', $msg);
+        return $this->wantsJson() ? $this->jsonOk(site_url('admin/locations'), $msg) : redirect()->to('/admin/locations')->with('message', $msg);
     }
 
     public function delete(int $id)

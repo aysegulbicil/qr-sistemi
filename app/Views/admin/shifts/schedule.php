@@ -20,7 +20,7 @@
 <?php if (! $userId): ?>
     <div class="card"><?= view('partials/empty', ['title' => 'Personel seç', 'message' => 'Plan görüntülemek için yukarıdan bir personel seç.']) ?></div>
 <?php elseif (empty($shifts)): ?>
-    <div class="card"><?= view('partials/empty', ['title' => 'Önce vardiya tanımla', 'message' => 'Plan yapabilmek için en az bir vardiya gerekli.', 'actionUrl' => site_url('admin/shifts/new'), 'actionLabel' => '+ Yeni vardiya']) ?></div>
+    <div class="card"><?= view('partials/empty', ['title' => 'Önce vardiya tanımla', 'message' => 'Plan yapabilmek için en az bir vardiya gerekli.', 'actionUrl' => site_url('admin/shifts/new'), 'actionLabel' => '+ Yeni vardiya', 'actionModal' => true, 'actionTitle' => 'Yeni vardiya']) ?></div>
 <?php else: ?>
 <form method="post" action="<?= site_url('admin/shift-schedule') ?>">
     <?= csrf_field() ?>

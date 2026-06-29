@@ -5,12 +5,12 @@
     <h1>Vardiyalar <span class="count-pill"><?= count($shifts) ?></span></h1>
     <div class="btn-group">
         <a class="btn btn-outline" href="<?= site_url('admin/shift-schedule') ?>">Haftalık plan</a>
-        <a class="btn btn-primary" href="<?= site_url('admin/shifts/new') ?>">+ Yeni vardiya</a>
+        <a class="btn btn-primary" href="<?= site_url('admin/shifts/new') ?>" data-modal data-modal-title="Yeni vardiya">+ Yeni vardiya</a>
     </div>
 </div>
 <div class="card">
     <?php if (empty($shifts)): ?>
-        <?= view('partials/empty', ['title' => 'Henüz vardiya yok', 'message' => 'İlk vardiyanı oluşturarak başla.', 'actionUrl' => site_url('admin/shifts/new'), 'actionLabel' => '+ Yeni vardiya']) ?>
+        <?= view('partials/empty', ['title' => 'Henüz vardiya yok', 'message' => 'İlk vardiyanı oluşturarak başla.', 'actionUrl' => site_url('admin/shifts/new'), 'actionLabel' => '+ Yeni vardiya', 'actionModal' => true, 'actionTitle' => 'Yeni vardiya']) ?>
     <?php else: ?>
     <div class="table-scroll">
         <table class="data">
@@ -25,7 +25,7 @@
                         <?php foreach (array_filter(explode(',', (string) ($s['workdays'] ?? ''))) as $d): ?><span class="badge badge-grey" style="margin-right:3px"><?= $dayLabels[(int) $d] ?? esc($d) ?></span><?php endforeach; ?>
                     </td>
                     <td class="row-actions">
-                        <a href="<?= site_url('admin/shifts/' . $s['id'] . '/edit') ?>">Düzenle</a>
+                        <a class="btn btn-warning-soft btn-sm" href="<?= site_url('admin/shifts/' . $s['id'] . '/edit') ?>" data-modal data-modal-title="Vardiyayı düzenle">Düzenle</a>
                         <form method="post" action="<?= site_url('admin/shifts/' . $s['id'] . '/delete') ?>" onsubmit="return confirm('Bu vardiya silinsin mi?')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
                     </td>
                 </tr>

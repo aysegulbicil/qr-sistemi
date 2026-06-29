@@ -91,34 +91,44 @@ class Employees extends BaseController
 
     private function form(?array $employee)
     {
-        return view('admin/employees/form', [
+        $data = [
             'employee'    => $employee,
             'departments' => (new DepartmentModel())->ordered(),
             'positions'   => (new PositionModel())->withDepartment(),
             'shifts'      => (new ShiftModel())->findAll(),
-        ]);
+        ];
+
+        return view($this->wantsJson() ? 'admin/employees/_form' : 'admin/employees/form', $data);
     }
 
     public function create()
     {
         if (! $this->validate($this->rules())) {
-            return redirect()->back()->withInput()->with('error', implode(' ', $this->validator->getErrors()));
+            $msg = implode(' ', $this->validator->getErrors());
+
+            return $this->wantsJson() ? $this->jsonError($msg) : redirect()->back()->withInput()->with('error', $msg);
         }
 
         (new UserModel())->insert((new EmployeeService())->payloadFromRequest($this->request, false));
 
-        return redirect()->to('/admin/employees')->with('message', 'Personel eklendi.');
+        return $this->wantsJson()
+            ? $this->jsonOk(site_url('admin/employees'), 'Personel eklendi.')
+            : redirect()->to('/admin/employees')->with('message', 'Personel eklendi.');
     }
 
     public function update(int $id)
     {
         if (! $this->validate($this->rules($id))) {
-            return redirect()->back()->withInput()->with('error', implode(' ', $this->validator->getErrors()));
+            $msg = implode(' ', $this->validator->getErrors());
+
+            return $this->wantsJson() ? $this->jsonError($msg) : redirect()->back()->withInput()->with('error', $msg);
         }
 
         (new UserModel())->update($id, (new EmployeeService())->payloadFromRequest($this->request, true));
 
-        return redirect()->to('/admin/employees')->with('message', 'Personel güncellendi.');
+        return $this->wantsJson()
+            ? $this->jsonOk(site_url('admin/employees'), 'Personel güncellendi.')
+            : redirect()->to('/admin/employees')->with('message', 'Personel güncellendi.');
     }
 
     public function show(int $id)

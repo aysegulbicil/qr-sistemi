@@ -7,6 +7,7 @@ $ini      = function_exists('initials') ? initials($name) : 'K';
 $uid        = (int) session()->get('user_id');
 $unread     = $loggedIn ? (new \App\Models\NotificationModel())->unreadCount($uid) : 0;
 $pendingReq = ($loggedIn && $role === 'admin') ? (count((new \App\Models\LeaveRequestModel())->pending()) + count((new \App\Models\AdvanceRequestModel())->pending())) : 0;
+$asset      = static fn (string $p): string => base_url($p) . '?v=' . (@filemtime(FCPATH . $p) ?: 1);
 ?>
 <!doctype html>
 <html lang="tr">
@@ -14,9 +15,10 @@ $pendingReq = ($loggedIn && $role === 'admin') ? (count((new \App\Models\LeaveRe
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= esc($title ?? 'Devam Takip') ?></title>
-    <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>">
+    <link rel="stylesheet" href="<?= $asset('assets/css/app.css') ?>">
     <!-- Kurumsal Klasik DataTable teması (app.css'ten SONRA) -->
-    <link rel="stylesheet" href="<?= base_url('assets/css/datatables.brand.css') ?>">
+    <link rel="stylesheet" href="<?= $asset('assets/css/datatables.brand.css') ?>">
+    <link rel="stylesheet" href="<?= $asset('assets/css/modal.css') ?>">
 </head>
 <body>
 
@@ -137,6 +139,16 @@ $pendingReq = ($loggedIn && $role === 'admin') ? (count((new \App\Models\LeaveRe
     </div>
     <div class="scrim" onclick="document.body.classList.remove('nav-open')"></div>
 </div>
+<!-- Ortak ekleme/düzenleme modalı -->
+<div class="modal-overlay" id="appModal" hidden>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="appModalTitle">
+        <div class="modal-head">
+            <h2 class="modal-title" id="appModalTitle"></h2>
+            <button type="button" class="modal-x" data-modal-close aria-label="Kapat">&times;</button>
+        </div>
+        <div class="modal-body"></div>
+    </div>
+</div>
 <?php else: ?>
 <div class="auth-wrap"><div class="auth-card"><?= $this->renderSection('content') ?></div></div>
 <?php endif; ?>
@@ -146,7 +158,8 @@ $pendingReq = ($loggedIn && $role === 'admin') ? (count((new \App\Models\LeaveRe
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="<?= base_url('assets/js/datatables.init.js') ?>"></script>
+<script src="<?= $asset('assets/js/datatables.init.js') ?>"></script>
+<script src="<?= $asset('assets/js/modal.js') ?>"></script>
 <?php endif; ?>
 
 <script>

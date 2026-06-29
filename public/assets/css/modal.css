@@ -1,0 +1,34 @@
+/* ============================================================
+   Modal — ekleme/düzenleme formları için ortak diyalog
+   Devam Takip. app.css tasarım token'larını kullanır.
+   ============================================================ */
+.modal-overlay{position:fixed;inset:0;z-index:70;display:flex;align-items:flex-start;justify-content:center;padding:40px 18px;background:rgba(15,23,41,.5);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.modal-overlay[hidden]{display:none;}
+.modal-dialog{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);width:100%;max-width:560px;margin:auto;display:flex;flex-direction:column;max-height:calc(100vh - 80px);animation:modalIn .18s ease;}
+.modal-dialog.modal-lg{max-width:760px;}
+@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.99);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){.modal-dialog{animation:none;}}
+
+.modal-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line);flex-shrink:0;}
+.modal-head .modal-title{margin:0;font-size:1.15rem;font-weight:800;letter-spacing:-.01em;}
+.modal-x{margin-left:auto;background:none;border:0;cursor:pointer;color:var(--faint);width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:1.5rem;line-height:1;transition:background .15s,color .15s;}
+.modal-x:hover{background:var(--neu-bg);color:var(--ink);}
+
+.modal-body{padding:22px;overflow-y:auto;}
+/* fragment formu kart/çerçeve olmadan gelir; modal kabuğu zaten karttır */
+.modal-body > form{margin:0;}
+.modal-body > form .form-actions{margin-top:18px;}
+
+/* AJAX hata bandı (modal kapanmadan gösterilir) */
+.modal-error{background:var(--dng-bg);color:var(--dng-ink);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;font-weight:600;font-size:.9rem;}
+.modal-error[hidden]{display:none;}
+
+/* yükleniyor durumu */
+.modal-loading{padding:34px 0;text-align:center;color:var(--muted);font-weight:600;}
+
+body.modal-open{overflow:hidden;}
+
+@media (max-width:520px){
+    .modal-overlay{padding:0;}
+    .modal-dialog,.modal-dialog.modal-lg{max-width:none;min-height:100dvh;max-height:none;border-radius:0;border:0;}
+}
