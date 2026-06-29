@@ -22,6 +22,8 @@ $routes->group('', ['filter' => 'auth'], static function (RouteCollection $route
     $routes->post('requests/leave', 'Requests::createLeave');
     $routes->post('requests/advance', 'Requests::createAdvance');
     $routes->get('notifications', 'Notifications::index');
+    $routes->get('gorevlerim', 'Tasks::mine');
+    $routes->post('gorevlerim/(:num)/durum', 'Tasks::updateStatus/$1');
 });
 
 $routes->group('admin', ['filter' => 'admin', 'namespace' => 'App\Controllers\Admin'], static function (RouteCollection $routes) {
@@ -74,6 +76,12 @@ $routes->group('admin', ['filter' => 'admin', 'namespace' => 'App\Controllers\Ad
     $routes->get('attendance/(:num)/edit', 'Attendance::edit/$1');
     $routes->post('attendance/(:num)', 'Attendance::update/$1');
     $routes->post('attendance/(:num)/delete', 'Attendance::delete/$1');
+    $routes->get('tasks', 'Tasks::index');
+    $routes->get('tasks/new', 'Tasks::new');
+    $routes->post('tasks', 'Tasks::create');
+    $routes->get('tasks/(:num)/edit', 'Tasks::edit/$1');
+    $routes->post('tasks/(:num)', 'Tasks::update/$1');
+    $routes->post('tasks/(:num)/delete', 'Tasks::delete/$1');
 
     // Talepler
     $routes->get('requests', 'Requests::index');
@@ -83,6 +91,8 @@ $routes->group('admin', ['filter' => 'admin', 'namespace' => 'App\Controllers\Ad
     $routes->post('requests/advance/(:num)/reject', 'Requests::rejectAdvance/$1');
 
     $routes->get('payroll', 'Payroll::index');
+    $routes->post('payroll/close', 'Payroll::close');
+    $routes->post('payroll/reopen', 'Payroll::reopen');
     $routes->get('payroll/(:num)', 'Payroll::show/$1');
     $routes->post('payroll/(:num)/advance', 'Payroll::addAdvance/$1');
     $routes->post('payroll/(:num)/advance/(:num)/delete', 'Payroll::deleteAdvance/$1/$2');

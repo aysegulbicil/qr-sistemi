@@ -32,7 +32,7 @@
                     <td class="row-actions">
                         <a href="<?= site_url('admin/locations/' . $l['id'] . '/qr') ?>">QR</a>
                         <a class="btn btn-warning-soft btn-sm" href="<?= site_url('admin/locations/' . $l['id'] . '/edit') ?>" data-modal data-modal-title="Lokasyonu düzenle">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/locations/' . $l['id'] . '/delete') ?>" onsubmit="return confirm('Bu lokasyon silinsin mi?')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
+                        <form method="post" action="<?= site_url('admin/locations/' . $l['id'] . '/delete') ?>" data-confirm="Bu lokasyon silinsin mi?"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
                     </td>
                 </tr>
             <?php endforeach; ?>

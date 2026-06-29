@@ -140,22 +140,34 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (form) {
         form.addEventListener('submit', function (e) {
+            if (form.dataset.bulkReady === '1') { return; }
+            e.preventDefault();
+            e.stopImmediatePropagation();
             var sel     = form.querySelector('select[name=bulk_action]');
             var checked = allChecks().filter(function (b) { return b.checked; });
-            if (! sel || ! sel.value) { e.preventDefault(); alert('Lütfen bir toplu işlem seçin.'); return; }
-            if (checked.length === 0) { e.preventDefault(); alert('Lütfen en az bir personel seçin.'); return; }
-            if (sel.value !== 'export') {
-                var label = sel.options[sel.selectedIndex].text;
-                if (! confirm(checked.length + ' personele "' + label + '" uygulansın mı?')) { e.preventDefault(); return; }
+            if (! sel || ! sel.value) { window.swalInfo('Lütfen bir toplu işlem seçin.', 'warning'); return; }
+            if (checked.length === 0) { window.swalInfo('Lütfen en az bir personel seçin.', 'warning'); return; }
+
+            function go() {
+                form.querySelectorAll('input.bulk-id-hidden').forEach(function (x) { x.remove(); });
+                checked.forEach(function (b) {
+                    var h = document.createElement('input');
+                    h.type = 'hidden'; h.name = 'ids[]'; h.value = b.getAttribute('data-id');
+                    h.className = 'bulk-id-hidden';
+                    form.appendChild(h);
+                });
+                form.dataset.bulkReady = '1';
+                if (form.requestSubmit) { form.requestSubmit(); } else { form.submit(); }
             }
-            // Seçili id'leri (tüm sayfalardan) gizli input olarak forma ekle
-            form.querySelectorAll('input.bulk-id-hidden').forEach(function (x) { x.remove(); });
-            checked.forEach(function (b) {
-                var h = document.createElement('input');
-                h.type = 'hidden'; h.name = 'ids[]'; h.value = b.getAttribute('data-id');
-                h.className = 'bulk-id-hidden';
-                form.appendChild(h);
-            });
+
+            if (sel.value === 'export') { go(); return; }
+            var label = sel.options[sel.selectedIndex].text;
+            window.swalConfirm({
+                title: 'Toplu işlem',
+                text: checked.length + ' personele "' + label + '" uygulansın mı?',
+                confirmText: 'Uygula',
+                danger: /sil|pasif|çıkar|terminate|delete/i.test(sel.value + ' ' + label)
+            }).then(function (r) { if (r.isConfirmed) { go(); } });
         });
     }
     refresh();

@@ -26,7 +26,7 @@
                     </td>
                     <td class="row-actions">
                         <a class="btn btn-warning-soft btn-sm" href="<?= site_url('admin/shifts/' . $s['id'] . '/edit') ?>" data-modal data-modal-title="Vardiyayı düzenle">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/shifts/' . $s['id'] . '/delete') ?>" onsubmit="return confirm('Bu vardiya silinsin mi?')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
+                        <form method="post" action="<?= site_url('admin/shifts/' . $s['id'] . '/delete') ?>" data-confirm="Bu vardiya silinsin mi?"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
                     </td>
                 </tr>
             <?php endforeach; ?>

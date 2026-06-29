@@ -19,7 +19,7 @@
                     <td class="muted"><?= esc($p['description'] ?: '—') ?></td>
                     <td class="row-actions">
                         <a class="btn btn-warning-soft btn-sm" href="<?= site_url('admin/positions/' . $p['id'] . '/edit') ?>" data-modal data-modal-title="Pozisyonu düzenle">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/positions/' . $p['id'] . '/delete') ?>" onsubmit="return confirm('Bu pozisyon silinsin mi?')">
+                        <form method="post" action="<?= site_url('admin/positions/' . $p['id'] . '/delete') ?>" data-confirm="Bu pozisyon silinsin mi?">
                             <?= csrf_field() ?>
                             <button class="btn btn-danger-soft btn-sm" type="submit">Sil</button>
                         </form>

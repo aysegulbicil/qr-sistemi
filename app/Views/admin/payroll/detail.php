@@ -8,7 +8,7 @@
         <span class="avatar-lg"><?= esc(initials($u['full_name'])) ?></span>
         <div>
             <div class="pname"><?= esc($u['full_name']) ?></div>
-            <div class="pmeta"><?= esc($monthStr) ?> · <?= esc(salary_type_label($p['salary_type'])) ?> maaş · <?= esc(money($p['salary_amount'], $cur)) ?></div>
+            <div class="pmeta"><?= esc($monthStr) ?> · <?= esc(salary_type_label($p['salary_type'])) ?> maaş · <?= esc(money($p['salary_amount'], $cur)) ?> <?php if (! empty($closed)): ?><span class="badge badge-blue">Donduruldu</span><?php endif; ?></div>
         </div>
         <div class="pactions">
             <form method="get" action="<?= site_url('admin/payroll/' . $u['id']) ?>" style="margin:0">
@@ -47,11 +47,12 @@
                     <span class="box ic <?= $a['type'] === 'advance' ? 'ot' : 'dng' ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
                     <span class="txt"><b><?= $a['type'] === 'advance' ? 'Avans' : 'Kesinti' ?></b><span><?= esc($a['reason'] ?: '—') ?></span></span>
                     <span class="num">− <?= esc(money((float) $a['amount'], $cur)) ?></span>
-                    <form method="post" action="<?= site_url('admin/payroll/' . $u['id'] . '/advance/' . $a['id'] . '/delete') ?>" onsubmit="return confirm('Silinsin mi?')"><?= csrf_field() ?><input type="hidden" name="month" value="<?= esc($ym) ?>"><button class="btn btn-link btn-sm" style="color:var(--dng-ink)">Sil</button></form>
+                    <?php if (empty($closed)): ?><form method="post" action="<?= site_url('admin/payroll/' . $u['id'] . '/advance/' . $a['id'] . '/delete') ?>" data-confirm="Silinsin mi?"><?= csrf_field() ?><input type="hidden" name="month" value="<?= esc($ym) ?>"><button class="btn btn-link btn-sm" style="color:var(--dng-ink)">Sil</button></form><?php endif; ?>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
 
+        <?php if (empty($closed)): ?>
         <form method="post" action="<?= site_url('admin/payroll/' . $u['id'] . '/advance') ?>" style="margin-top:16px;border-top:1px solid var(--line);padding-top:16px">
             <?= csrf_field() ?>
             <input type="hidden" name="month" value="<?= esc($ym) ?>">
@@ -62,6 +63,9 @@
             <div class="field"><label>Açıklama</label><input type="text" name="reason"></div>
             <button class="btn btn-primary btn-sm">Ekle</button>
         </form>
+        <?php else: ?>
+        <p class="muted" style="margin-top:16px;border-top:1px solid var(--line);padding-top:16px">Bu ay donduruldu. Avans/kesinti eklemek için önce <strong>Puantaj</strong> ekranından ayı yeniden aç.</p>
+        <?php endif; ?>
     </div>
 </div>
 <?= $this->endSection() ?>

@@ -7,6 +7,10 @@ $ini      = function_exists('initials') ? initials($name) : 'K';
 $uid        = (int) session()->get('user_id');
 $unread     = $loggedIn ? (new \App\Models\NotificationModel())->unreadCount($uid) : 0;
 $pendingReq = ($loggedIn && $role === 'admin') ? (count((new \App\Models\LeaveRequestModel())->pending()) + count((new \App\Models\AdvanceRequestModel())->pending())) : 0;
+$openTasks  = 0;
+if ($loggedIn && $role !== 'admin') {
+    try { $openTasks = (new \App\Models\TaskModel())->countOpenForUser($uid); } catch (\Throwable $e) { $openTasks = 0; }
+}
 $asset      = static fn (string $p): string => base_url($p) . '?v=' . (@filemtime(FCPATH . $p) ?: 1);
 ?>
 <!doctype html>
@@ -55,6 +59,11 @@ $asset      = static fn (string $p): string => base_url($p) . '?v=' . (@filemtim
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
                 Taleplerim
             </a>
+            <a class="nav-link <?= $cur === 'gorevlerim' ? 'active' : '' ?>" href="<?= site_url('gorevlerim') ?>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                Görevlerim
+                <?php if ($openTasks): ?><span class="nav-badge"><?= $openTasks ?></span><?php endif; ?>
+            </a>
             <a class="nav-link <?= $cur === 'notifications' ? 'active' : '' ?>" href="<?= site_url('notifications') ?>">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
                 Bildirimler
@@ -73,6 +82,10 @@ $asset      = static fn (string $p): string => base_url($p) . '?v=' . (@filemtim
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 14l2 2 4-4"/></svg>
                 Talepler
                 <?php if ($pendingReq): ?><span class="nav-badge"><?= $pendingReq ?></span><?php endif; ?>
+            </a>
+            <a class="nav-link <?= str_starts_with($cur, 'admin/tasks') ? 'active' : '' ?>" href="<?= site_url('admin/tasks') ?>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                Görevler
             </a>
             <a class="nav-link <?= str_starts_with($cur, 'admin/employees') ? 'active' : '' ?>" href="<?= site_url('admin/employees') ?>">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6"/><path d="M19.8 20a5 5 0 0 0-3-4.6"/></svg>
@@ -164,6 +177,9 @@ $asset      = static fn (string $p): string => base_url($p) . '?v=' . (@filemtim
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="<?= $asset('assets/js/datatables.init.js') ?>"></script>
 <script src="<?= $asset('assets/js/modal.js') ?>"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="<?= $asset('assets/js/confirm.js') ?>"></script>
 <?php endif; ?>
 
 <script>

@@ -6,7 +6,19 @@
         <input type="month" name="month" value="<?= esc($ym) ?>" onchange="this.form.submit()">
     </form>
 </div>
-<p class="page-sub"><?= esc($monthStr) ?></p>
+<div class="card-head" style="margin-top:-4px">
+    <p class="page-sub m0"><?= esc($monthStr) ?> <?php if (! empty($closed)): ?><span class="badge badge-blue">Donduruldu</span><?php endif; ?></p>
+    <?php if (! empty($rows)): ?>
+    <div class="btn-group">
+        <?php if (! empty($closed)): ?>
+            <?php if (! empty($closedAt)): ?><span class="muted-sm" style="align-self:center"><?= esc(date('d.m.Y H:i', strtotime($closedAt))) ?> donduruldu</span><?php endif; ?>
+            <form method="post" action="<?= site_url('admin/payroll/reopen') ?>" class="m0" data-confirm="Bu ay yeniden açılsın mı? Değerler tekrar canlı hesaplanır." data-confirm-safe data-confirm-title="Ayı yeniden aç" data-confirm-ok="Yeniden aç"><?= csrf_field() ?><input type="hidden" name="month" value="<?= esc($ym) ?>"><button class="btn btn-outline btn-sm">Yeniden aç</button></form>
+        <?php else: ?>
+            <form method="post" action="<?= site_url('admin/payroll/close') ?>" class="m0" data-confirm="<?= esc($monthStr) ?> dondurulsun mu? Bu aydaki değerler sabitlenir, sonraki düzeltmelerden etkilenmez." data-confirm-safe data-confirm-title="Ayı dondur" data-confirm-ok="Ayı dondur"><?= csrf_field() ?><input type="hidden" name="month" value="<?= esc($ym) ?>"><button class="btn btn-primary btn-sm">Ayı dondur</button></form>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+</div>
 
 <div class="tiles page-tiles">
     <div class="tile"><span class="box ic in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6"/><path d="M19.8 20a5 5 0 0 0-3-4.6"/></svg></span><div><div class="v"><?= count($rows) ?></div><div class="l">Personel</div></div></div>

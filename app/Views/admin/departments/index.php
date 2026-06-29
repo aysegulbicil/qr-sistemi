@@ -18,7 +18,7 @@
                     <td class="muted"><?= esc($d['description'] ?: '—') ?></td>
                     <td class="row-actions">
                         <a class="btn btn-warning-soft btn-sm" href="<?= site_url('admin/departments/' . $d['id'] . '/edit') ?>" data-modal data-modal-title="Departmanı düzenle">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/departments/' . $d['id'] . '/delete') ?>" onsubmit="return confirm('Bu departman silinsin mi?')">
+                        <form method="post" action="<?= site_url('admin/departments/' . $d['id'] . '/delete') ?>" data-confirm="Bu departman silinsin mi?">
                             <?= csrf_field() ?>
                             <button class="btn btn-danger-soft btn-sm" type="submit">Sil</button>
                         </form>

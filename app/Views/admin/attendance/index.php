@@ -53,7 +53,7 @@ $dirBadge = static fn (string $t): string => $t === 'in'
                     <td class="muted"><?= esc($l['note'] ?: '') ?></td>
                     <td class="row-actions">
                         <a class="btn btn-warning-soft btn-sm" href="<?= site_url('admin/attendance/' . $l['id'] . '/edit') ?>" data-modal data-modal-title="Kaydı düzenle">Düzenle</a>
-                        <form method="post" action="<?= site_url('admin/attendance/' . $l['id'] . '/delete') ?>" onsubmit="return confirm('Bu kayıt silinsin mi? Puantajı etkileyebilir.')"><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
+                        <form method="post" action="<?= site_url('admin/attendance/' . $l['id'] . '/delete') ?>" data-confirm="Bu kayıt silinsin mi? Puantajı etkileyebilir."><?= csrf_field() ?><button class="btn btn-danger-soft btn-sm">Sil</button></form>
                     </td>
                 </tr>
             <?php endforeach; ?>
