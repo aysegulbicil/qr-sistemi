@@ -40,4 +40,41 @@ class AttendanceLogModel extends Model
             ->orderBy('event_at', 'ASC')
             ->findAll();
     }
+
+    /** Son kayıtlar — personel + lokasyon adıyla (admin düzeltme ekranı). */
+    public function recentDetailed(int $limit = 300): array
+    {
+        return $this->db->table('attendance_logs a')
+            ->select('a.*, u.full_name, l.name AS location_name')
+            ->join('users u', 'u.id = a.user_id', 'left')
+            ->join('locations l', 'l.id = a.location_id', 'left')
+            ->orderBy('a.event_at', 'DESC')
+            ->limit($limit)
+            ->get()->getResultArray();
+    }
+
+    /** Açık kayıtlar: son hareketi "giriş" olan (çıkış yapılmamış) personel. */
+    public function openCheckIns(): array
+    {
+        $sql = 'SELECT a.*, u.full_name'
+             . ' FROM attendance_logs a'
+             . ' JOIN (SELECT user_id, MAX(event_at) AS max_at FROM attendance_logs GROUP BY user_id) m'
+             . '   ON m.user_id = a.user_id AND m.max_at = a.event_at'
+             . ' LEFT JOIN users u ON u.id = a.user_id'
+             . " WHERE a.type = 'in'"
+             . ' ORDER BY a.event_at ASC';
+
+        return $this->db->query($sql)->getResultArray();
+    }
+
+    /** Tek kayıt — personel + lokasyon adıyla. */
+    public function findDetailed(int $id): ?array
+    {
+        return $this->db->table('attendance_logs a')
+            ->select('a.*, u.full_name, l.name AS location_name')
+            ->join('users u', 'u.id = a.user_id', 'left')
+            ->join('locations l', 'l.id = a.location_id', 'left')
+            ->where('a.id', $id)
+            ->get()->getRowArray() ?: null;
+    }
 }

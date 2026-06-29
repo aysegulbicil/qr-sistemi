@@ -4,6 +4,8 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\ShiftModel;
+use App\Models\ShiftAssignmentModel;
+use App\Models\UserModel;
 
 class Shifts extends BaseController
 {
@@ -57,6 +59,26 @@ class Shifts extends BaseController
 
     public function delete(int $id)
     {
+        $shift = (new ShiftModel())->find($id);
+        if ($shift === null) {
+            return redirect()->to('/admin/shifts')->with('error', 'Vardiya bulunamadı.');
+        }
+
+        $userCount       = (new UserModel())->where('shift_id', $id)->countAllResults();
+        $assignmentCount = (new ShiftAssignmentModel())->where('shift_id', $id)->countAllResults();
+        if ($userCount > 0 || $assignmentCount > 0) {
+            $parts = [];
+            if ($userCount > 0) {
+                $parts[] = $userCount . ' personelin varsayılan vardiyası';
+            }
+            if ($assignmentCount > 0) {
+                $parts[] = $assignmentCount . ' takvim ataması';
+            }
+
+            return redirect()->to('/admin/shifts')
+                ->with('error', 'Bu vardiyaya bağlı ' . implode(' ve ', $parts) . ' var. Vardiya silinemez.');
+        }
+
         (new ShiftModel())->delete($id);
 
         return redirect()->to('/admin/shifts')->with('message', 'Vardiya silindi.');

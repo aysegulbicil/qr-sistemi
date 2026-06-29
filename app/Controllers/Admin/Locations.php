@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\LocationModel;
+use App\Models\AttendanceLogModel;
 use App\Services\DynamicQr;
 
 class Locations extends BaseController
@@ -111,6 +112,17 @@ class Locations extends BaseController
 
     public function delete(int $id)
     {
+        $location = (new LocationModel())->find($id);
+        if ($location === null) {
+            return redirect()->to('/admin/locations')->with('error', 'Lokasyon bulunamadı.');
+        }
+
+        $logCount = (new AttendanceLogModel())->where('location_id', $id)->countAllResults();
+        if ($logCount > 0) {
+            return redirect()->to('/admin/locations')
+                ->with('error', 'Bu lokasyona ait ' . $logCount . ' giriş-çıkış kaydı var. Geçmiş bozulmasın diye silinemez — bunun yerine düzenleyip "Pasif" yap.');
+        }
+
         (new LocationModel())->delete($id);
 
         return redirect()->to('/admin/locations')->with('message', 'Lokasyon silindi.');

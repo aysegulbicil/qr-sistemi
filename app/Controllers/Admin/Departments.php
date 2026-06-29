@@ -4,6 +4,8 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\DepartmentModel;
+use App\Models\PositionModel;
+use App\Models\UserModel;
 
 class Departments extends BaseController
 {
@@ -67,6 +69,26 @@ class Departments extends BaseController
 
     public function delete(int $id)
     {
+        $department = (new DepartmentModel())->find($id);
+        if ($department === null) {
+            return redirect()->to('/admin/departments')->with('error', 'Departman bulunamadı.');
+        }
+
+        $userCount     = (new UserModel())->where('department_id', $id)->countAllResults();
+        $positionCount = (new PositionModel())->where('department_id', $id)->countAllResults();
+        if ($userCount > 0 || $positionCount > 0) {
+            $parts = [];
+            if ($userCount > 0) {
+                $parts[] = $userCount . ' personel';
+            }
+            if ($positionCount > 0) {
+                $parts[] = $positionCount . ' pozisyon';
+            }
+
+            return redirect()->to('/admin/departments')
+                ->with('error', 'Bu departmana bağlı ' . implode(' ve ', $parts) . ' var. Önce bunları başka departmana taşı/sil; departman silinemez.');
+        }
+
         (new DepartmentModel())->delete($id);
 
         return redirect()->to('/admin/departments')->with('message', 'Departman silindi.');

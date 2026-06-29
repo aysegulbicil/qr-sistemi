@@ -68,6 +68,12 @@ $routes->group('admin', ['filter' => 'admin', 'namespace' => 'App\Controllers\Ad
     $routes->get('locations/(:num)/token', 'Locations::token/$1');
 
     $routes->get('suspicious', 'Suspicious::index');
+    $routes->get('attendance', 'Attendance::index');
+    $routes->get('attendance/new', 'Attendance::new');
+    $routes->post('attendance', 'Attendance::create');
+    $routes->get('attendance/(:num)/edit', 'Attendance::edit/$1');
+    $routes->post('attendance/(:num)', 'Attendance::update/$1');
+    $routes->post('attendance/(:num)/delete', 'Attendance::delete/$1');
 
     // Talepler
     $routes->get('requests', 'Requests::index');

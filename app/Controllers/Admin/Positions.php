@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\DepartmentModel;
 use App\Models\PositionModel;
+use App\Models\UserModel;
 
 class Positions extends BaseController
 {
@@ -76,6 +77,17 @@ class Positions extends BaseController
 
     public function delete(int $id)
     {
+        $position = (new PositionModel())->find($id);
+        if ($position === null) {
+            return redirect()->to('/admin/positions')->with('error', 'Pozisyon bulunamadı.');
+        }
+
+        $userCount = (new UserModel())->where('position_id', $id)->countAllResults();
+        if ($userCount > 0) {
+            return redirect()->to('/admin/positions')
+                ->with('error', 'Bu pozisyonda ' . $userCount . ' personel var. Önce onları başka pozisyona taşı; pozisyon silinemez.');
+        }
+
         (new PositionModel())->delete($id);
 
         return redirect()->to('/admin/positions')->with('message', 'Pozisyon silindi.');

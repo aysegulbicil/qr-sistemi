@@ -98,6 +98,10 @@ $asset      = static fn (string $p): string => base_url($p) . '?v=' . (@filemtim
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.7-8 9-4.8-1.3-8-4.5-8-9V6z"/><path d="M12 8.5v4"/><path d="M12 16h.01"/></svg>
                 Şüpheli işlemler
             </a>
+            <a class="nav-link <?= str_starts_with($cur, 'admin/attendance') ? 'active' : '' ?>" href="<?= site_url('admin/attendance') ?>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                Devam Kayıtları
+            </a>
             <a class="nav-link <?= str_starts_with($cur, 'admin/payroll') ? 'active' : '' ?>" href="<?= site_url('admin/payroll') ?>">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M21 12h-6a2 2 0 0 0 0 4h6z"/></svg>
                 Puantaj &amp; Maaş
